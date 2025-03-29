@@ -9,4 +9,3 @@ const categories = [
     { name: "Pulses", img: require("../assets/images/pulses.jpg"), desc: "Healthy and nutritious pulses!", route: "/pulses" }
   ];
   
-  console.log("Categories Array:", categories);
