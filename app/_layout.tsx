@@ -1,39 +1,38 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
+import { Stack } from "expo-router";
 
-import { useColorScheme } from '@/hooks/useColorScheme';
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
-
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
-
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
-
-  if (!loaded) {
-    return null;
-  }
-
+export default function Layout() {
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <Stack>
+      <Stack.Screen name="index" options={{ title: "Home" }} />
+      <Stack.Screen name="login" options={{ title: "Login" }} />
+      <Stack.Screen name="signup" options={{ title: "Sign Up" }} />
+      <Stack.Screen name="home" options={{ title: "Home Page" }} />
+      <Stack.Screen name="vegetable" options={{ title: "Vegetables" }} />
+      <Stack.Screen name="tomatoview" options={{ title: "Tomato View" }} />
+      <Stack.Screen name="proceed" options={{ title: "Proceed" }} />
+      <Stack.Screen name="payment" options={{ title: "Payment" }} />
+      <Stack.Screen name="address" options={{ title: "Address" }} />
+      <Stack.Screen name="pay" options={{ title: "Pay" }} />
+      <Stack.Screen name="profile" options={{ title: "Profile" }} />
+      <Stack.Screen name="language" options={{ title: "Language" }} />
+      <Stack.Screen name="wishlist" options={{ title: "Wishlist" }} />
+      <Stack.Screen name="order" options={{ title: "order" }} />
+      <Stack.Screen name="user" options={{ title: "user" }} />
+      <Stack.Screen name="password" options={{ title: "password" }} />
+      <Stack.Screen name="account" options={{ title: "account" }} />
+      <Stack.Screen name="orderdetail" options={{ title: "Order Details" }} />
+      <Stack.Screen name="mobilepass" options={{ title: "mobilepass" }} />
+      <Stack.Screen name="msgdetail" options={{ title: "msgdetail" }} />
+      <Stack.Screen name="flower" options={{ title: "flower" }} />
+      <Stack.Screen name="fruit" options={{ title: "fruit" }} />
+      <Stack.Screen name="greenveg" options={{ title: "greenveg" }} />
+      <Stack.Screen name="coconut" options={{ title: "coconut" }} />
+      <Stack.Screen name="spices" options={{ title: "spices" }} />
+      <Stack.Screen name="pulses" options={{ title: "pulses" }} />
+
+
+   
+
+    </Stack>
   );
 }
