@@ -112,3 +112,111 @@ export const productData = [
   },
 
 ];
+
+export const farmerData = [
+  {
+    id: 1,
+    name: "Ramesh Kumar",
+    location: "Thanjavur, Tamil Nadu",
+    experience: "10 years",
+    contact: "9876543210",
+    products: [
+      {
+        id: 101,
+        name: "Tomato",
+        variety: "Desi Varieties",
+        marketPrice: 30,
+        discount: 20,
+        price: 24, // Price after discount
+        quantity: "1 kg",
+        image: require("../assets/images/tomato.png"),
+        description:
+          "The tomato is a nutrient-rich fruit used as a vegetable, packed with vitamins and antioxidants. It’s versatile, eaten raw or cooked in various dishes worldwide.",
+        rating: 4.3,
+      },
+      {
+        id: 102,
+        name: "Potato",
+        variety: "Organic",
+        marketPrice: 40,
+        discount: 15,
+        price: 34, // Price after discount
+        quantity: "1 kg",
+        image: require("../assets/images/potato.png"),
+        description:
+          "Potatoes are a staple in many diets worldwide, rich in carbohydrates and essential nutrients. They can be boiled, fried, or mashed for various delicious dishes.",
+        rating: 4.5,
+      },
+    ],
+  },
+  {
+    id: 2,
+    name: "Lakshmi Narayanan",
+    location: "Salem, Tamil Nadu",
+    experience: "15 years",
+    contact: "9876543211",
+    products: [
+      {
+        id: 103,
+        name: "Carrot",
+        variety: "Ooty Carrots",
+        marketPrice: 50,
+        discount: 10,
+        price: 45, // Price after discount
+        quantity: "1 kg",
+        image: require("../assets/images/carrot.png"),
+        description:
+          "Carrots are rich in beta-carotene, vitamins, and fiber. They are excellent for vision and overall health. Enjoy them raw, steamed, or in soups and salads.",
+        rating: 4.7,
+      },
+      {
+        id: 104,
+        name: "Onion",
+        variety: "Red Onion",
+        marketPrice: 45,
+        discount: 12,
+        price: 39.6, // Price after discount
+        quantity: "1 kg",
+        image: require("../assets/images/onion.png"),
+        description:
+          "Red onions add a flavorful punch to any dish. Packed with antioxidants, they are great for health and enhance the taste of curries, salads, and more.",
+        rating: 4.4,
+      },
+    ],
+  },
+  {
+    id: 3,
+    name: "Sundar Rajan",
+    location: "Madurai, Tamil Nadu",
+    experience: "8 years",
+    contact: "9876543212",
+    products: [
+      {
+        id: 105,
+        name: "Cabbage",
+        variety: "Green Cabbage",
+        marketPrice: 35,
+        discount: 10,
+        price: 31.5, // Price after discount
+        quantity: "1 kg",
+        image: require("../assets/images/cabbage.png"),
+        description:
+          "Cabbage is a leafy green vegetable packed with fiber and essential vitamins. It is commonly used in salads, stir-fries, and curries.",
+        rating: 4.6,
+      },
+      {
+        id: 106,
+        name: "Brinjal",
+        variety: "Purple Brinjal",
+        marketPrice: 25,
+        discount: 5,
+        price: 23.75, // Price after discount
+        quantity: "1 kg",
+        image: require("../assets/images/eggplant.png"),
+        description:
+          "Brinjal (Eggplant) is rich in antioxidants and fiber. It is widely used in Indian curries, stir-fries, and roasted dishes.",
+        rating: 4.2,
+      },
+    ],
+  },
+];

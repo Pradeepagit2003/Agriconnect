@@ -5,10 +5,10 @@ import { productData } from "./data"; // Ensure this file exists and has product
 import { useLocalSearchParams } from "expo-router/build/hooks";
 
 const ProductView = () => {
-//   const [selectedProduct, setSelectedProduct] = useState(productData[0]);
   const [quantity, setQuantity] = useState(1);
-  const { name } = useLocalSearchParams(); // Get the passed product name
-  const selectedProduct = productData.find((product) => product.name === name); // Find product by name
+  const { data } = useLocalSearchParams(); // Get the passed product name
+  
+  const selectedProduct = Array.isArray(data) ? JSON.parse(data[0]) : JSON.parse(data);
 
      // **Handle case where product is not found**
   if (!selectedProduct) {
@@ -63,7 +63,7 @@ const ProductView = () => {
         </View>
 
         {/* User Reviews */}
-        {selectedProduct.reviews.map((review, index) => (
+        {selectedProduct.reviews.map((review: any, index: any) => (
           <View key={index} style={styles.reviewContainer}>
             <Text style={styles.reviewTitle}>Most Useful Review</Text>
             <View style={styles.userContainer}>

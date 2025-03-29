@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, Image, ScrollView, StyleSheet, TextInput, Dimensions, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
+import { farmerData, productData, vegetables } from "./data"
+import { FlatList } from "react-native";
 
 const { width } = Dimensions.get("window");
 
@@ -40,6 +42,34 @@ const HomeScreen = () => {
   
     router.push(`/${formattedRoute}`);
   };
+
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // Filter products based on search input
+  const filteredProducts = vegetables.filter((item : any) =>
+    item.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const getSearchResult = (query: any) => {
+    
+    if (!query) return null;
+  
+    // Check if query matches a farmer's name
+    const matchedFarmer =farmerData.find((farmer) => farmer.name === query)
+  
+    if (matchedFarmer) {
+      return { type: "farmer", data: matchedFarmer };
+    }
+  
+    // Check if query matches a product name
+    const matchedProduct =productData.find((product) => product.name === query)
+  
+    if (matchedProduct) {
+      return { type: "product", data: matchedProduct };
+    }
+  
+    return null; // No match found
+  };
   
 
   return (
@@ -55,12 +85,54 @@ const HomeScreen = () => {
           </TouchableOpacity>
         </View>
       </View>
+{/* Search Bar */}
+<View style={styles.searchContainer}>
+  <Image source={icons.search} style={styles.searchIcon} />
+  <TextInput
+    style={styles.searchInput}
+    placeholder="Search for all Products"
+    placeholderTextColor="#888"
+    value={searchQuery}
+    onChangeText={(text) => setSearchQuery(text)}
+  />
+</View>
 
-      {/* Search Bar */}
-      <View style={styles.searchContainer}>
-        <Image source={icons.search} style={styles.searchIcon} />
-        <TextInput style={styles.searchInput} placeholder="Search for all Product" placeholderTextColor="#888" />
-      </View>
+{/* Show List Only When Searching */}
+<View style={styles.searchResultsContainer}>
+  {searchQuery.length > 0 && (
+    <FlatList
+    data={[...vegetables, ...farmerData].filter((item: any) =>
+      item.name.toLowerCase().includes(searchQuery.toLowerCase())
+    )}
+
+      keyExtractor={(item) => item.id.toString()}
+      renderItem={({ item }) => (
+        <TouchableOpacity 
+          style={styles.itemContainer} 
+          // onPress={() => router.push({ pathname: "/product", params: { data: item.name } })} // Navigate to product page
+          onPress={() => {
+            
+            const searchResult = getSearchResult(item.name);
+          
+            if (searchResult) {
+              if (searchResult.type === "farmer") {
+                router.push({ pathname: "/farmerProductList", params: { data: JSON.stringify(searchResult.data) } });
+              } else if (searchResult.type === "product") {
+                router.push({ pathname: "/product", params: { data: JSON.stringify(searchResult.data) } });
+              }
+            } else {
+              handleCategoryPress(item.name); // Fallback to category navigation
+            }
+          }}
+       >
+          <Text style={styles.itemText}>{item.name} </Text>
+        </TouchableOpacity>
+      )}
+      ListEmptyComponent={<Text style={styles.noResult}>No results found</Text>}
+    />
+  )}
+</View>
+
 
       {/* Scrollable Content */}
       <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -126,6 +198,17 @@ const styles = StyleSheet.create({
   searchContainer: { flexDirection: "row", backgroundColor: "#ffffff", margin: 10, borderRadius: 25, padding: 3, alignItems: "center", borderWidth: 1, borderColor: "green", marginLeft: 15, marginRight: 15 },
   searchIcon: { width: 20, height: 20, marginRight: 10, marginLeft: 10 },
   searchInput: { flex: 1, fontSize: 16 },
+   itemContainer: { padding: 10, borderBottomWidth: 1, borderColor: "#ddd" },
+  itemText: { fontSize: 16 },
+  noResult: { textAlign: "center", marginTop: 20, fontSize: 16, color: "#888" },
+  searchResultsContainer: {
+    maxHeight: 300,  // Set a max height to keep it visible
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    elevation: 3,
+    padding: 5,
+    marginHorizontal: 10,
+  },
 
   // Bottom Navigation
   bottomNav: { position: "absolute", bottom: 0, left: 0, right: 0, flexDirection: "row", backgroundColor: "#fff", borderTopWidth: 1, borderColor: "#ddd", paddingVertical: 10, justifyContent: "space-around", alignItems: "center", height: 70 },
