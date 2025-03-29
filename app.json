@@ -1,7 +1,12 @@
 {
   "expo": {
+<<<<<<< HEAD
     "name": "myapp",
     "slug": "myapp",
+=======
+    "name": "myproject",
+    "slug": "myproject",
+>>>>>>> 1042cd1466c934f71f58f53f02fff33b37281aab
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -32,10 +37,30 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
+<<<<<<< HEAD
+=======
+      ],
+      [
+        "expo-font",
+        {
+          "custom": {
+            "Feather": "./node_modules/react-native-vector-icons/Fonts/Feather.ttf",
+            "MaterialIcons": "./node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"
+          }
+        }
+>>>>>>> 1042cd1466c934f71f58f53f02fff33b37281aab
       ]
     ],
     "experiments": {
       "typedRoutes": true
+<<<<<<< HEAD
+=======
+    },
+    "extra": {
+      "eas": {
+        "projectId": "your-project-id"
+      }
+>>>>>>> 1042cd1466c934f71f58f53f02fff33b37281aab
     }
   }
 }

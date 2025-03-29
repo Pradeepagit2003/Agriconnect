@@ -1,10 +1,17 @@
 # Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
 
 # dependencies
+<<<<<<< HEAD
 node_modules/
 
 # Expo
 .expo/
+=======
+# node_modules/
+
+# Expo
+# .expo/
+>>>>>>> 1042cd1466c934f71f58f53f02fff33b37281aab
 dist/
 web-build/
 expo-env.d.ts
