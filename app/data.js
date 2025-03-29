@@ -29,3 +29,86 @@ import TomatoImage from '../assets/images/tomato.png';
 //      { id: '10', name: 'Pearl Millet', quantity: '20kg', price: 48, oldPrice: 58, discount: '17%', rating: 4.3, image: PearlMilletImage },
 //      { id: '11', name: 'Barnyard Millet', quantity: '14kg', price: 52, oldPrice: 62, discount: '16%', rating: 4.7, image: BarnyardMilletImage },
 //  ];
+export const productData = [
+  {
+    id: 1,
+    name: "Tomato",
+    variety: "Desi Varieties",
+    marketPrice: 30,
+    discount: 20,
+    image: require("../assets/images/tomato.png"),
+    description:
+      "The tomato is a nutrient-rich fruit used as a vegetable, packed with vitamins and antioxidants. It’s versatile, eaten raw or cooked in various dishes worldwide.",
+    deliveryLocation: "639110, Kulithalai",
+    rating: 4.3,
+    reviews: [
+      {
+        user: "Dayalan",
+        verified: true,
+        date: "12/03/2023",
+        text: "Absolutely delicious! The tomatoes were fresh, tangy, and had the perfect balance of sweetness and acidity. Great for both raw consumption and cooking.",
+      },
+    ],
+  },
+  {
+    id: 2,
+    name: "Potato",
+    variety: "Organic",
+    marketPrice: 40,
+    discount: 15,
+    image: require("../assets/images/potato.png"),
+    description:
+      "Potatoes are a staple in many diets worldwide, rich in carbohydrates and essential nutrients. They can be boiled, fried, or mashed for various delicious dishes.",
+    deliveryLocation: "639110, Kulithalai",
+    rating: 4.5,
+    reviews: [
+      {
+        user: "Anand",
+        verified: true,
+        date: "15/04/2023",
+        text: "Very fresh and organic! The taste is amazing when cooked. Definitely a good buy.",
+      },
+    ],
+  },
+  {
+    id: 3,
+    name: "Carrot",
+    variety: "Ooty Carrots",
+    marketPrice: 50,
+    discount: 10,
+    image: require("../assets/images/carrot.png"),
+    description:
+      "Carrots are rich in beta-carotene, vitamins, and fiber. They are excellent for vision and overall health. Enjoy them raw, steamed, or in soups and salads.",
+    deliveryLocation: "639110, Kulithalai",
+    rating: 4.7,
+    reviews: [
+      {
+        user: "Sanjay",
+        verified: true,
+        date: "02/05/2023",
+        text: "These carrots are so fresh and naturally sweet! Perfect for juices and salads.",
+      },
+    ],
+  },
+  {
+    id: 4,
+    name: "Onion",
+    variety: "Red Onion",
+    marketPrice: 45,
+    discount: 12,
+    image: require("../assets/images/onion.png"),
+    description:
+      "Red onions add a flavorful punch to any dish. Packed with antioxidants, they are great for health and enhance the taste of curries, salads, and more.",
+    deliveryLocation: "639110, Kulithalai",
+    rating: 4.4,
+    reviews: [
+      {
+        user: "Priya",
+        verified: true,
+        date: "20/06/2023",
+        text: "Nice and fresh! The onions had a strong aroma and enhanced my dishes very well.",
+      },
+    ],
+  },
+
+];
