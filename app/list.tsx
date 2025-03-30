@@ -14,7 +14,6 @@ import { router, useLocalSearchParams } from 'expo-router';
  export default function List() {
    const navigation = useNavigation<NavigationProp<RootStackParamList>>();
      const { data } = useLocalSearchParams(); // Get the passed product name
-
      const selected = Array.isArray(data) ? JSON.parse(data[0]) : JSON.parse(data);
      
         // **Handle case where product is not found**

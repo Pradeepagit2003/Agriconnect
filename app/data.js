@@ -6,7 +6,14 @@ import TomatoImage from '../assets/images/tomato.png';
  import CabbageImage from '../assets/images/cabbage.png';
  
  export const categoriesData = [
-  { id: 1, name: "Vegetables", img: require("../assets/images/vegetables.jpg"), desc: "Fresh farm vegetables, straight to you!", route: "/vegetable" },
+  { id: 1, name: "Vegetables", img: require("../assets/images/vegetables.jpg"), desc: "Fresh farm vegetables, straight to you!", route: "/vegetable", products:[
+   { id: '1', name: 'Tomato', quantity: '20kg', price: 24, oldPrice: 30, discount: '20%', rating: 4.3, image: TomatoImage },
+     { id: '2', name: 'Eggplant', quantity: '30kg', price: 40, oldPrice: 45, discount: '11%', rating: 4.2, image: EggplantImage },
+     { id: '3', name: 'Potato', quantity: '32kg', price: 62, oldPrice: 70, discount: '12%', rating: 4.1, image: PotatoImage },
+     { id: '4', name: 'Carrot', quantity: '25kg', price: 52, oldPrice: 55, discount: '5%', rating: 4.8, image: CarrotImage },
+     { id: '5', name: 'Onion', quantity: '40kg', price: 65, oldPrice: 70, discount: '7%', rating: 4.5, image: OnionImage },
+     { id: '6', name: 'Cabbage', quantity: '22kg', price: 32, oldPrice: 35, discount: '8%', rating: 4.7, image: CabbageImage },
+  ] },
   { id: 2, name: "Millets", img: require("../assets/images/millets.jpeg"), desc: "Nutritious farm-fresh millets, straight to you!", route: "/millets" },
   { id: 3, name: "Fruits", img: require("../assets/images/fruits.jpeg"), desc: "Handpicked fresh fruits for a healthy life!", route: "/fruits" },
   { id: 4, name: "Flowers", img: require("../assets/images/flowers.png"), desc: "Beautiful and fresh flowers for all occasions!", route: "/flowers" },

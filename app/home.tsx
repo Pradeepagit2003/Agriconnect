@@ -55,7 +55,7 @@ const HomeScreen = () => {
     if (!query) return null;
 
     // Check if query matches a category's name
-    const matchedCategory =farmerData.find((farmer) => farmer.name === query)
+    const matchedCategory =categoriesData.find((category) => category.name === query)
   
     if (matchedCategory) {
       return { type: "category", data: matchedCategory };
@@ -124,8 +124,6 @@ const HomeScreen = () => {
               } else if (searchResult.type === "product") {
                 router.push({ pathname: "/product", params: { data: JSON.stringify(searchResult.data) } });
               }
-            } else {
-              handleCategoryPress(item.name); // Fallback to category navigation
             }
           }}
        >
@@ -143,8 +141,13 @@ const HomeScreen = () => {
         {/* Categories */}
         <Text style={styles.header}>Categories</Text>
         <View style={styles.sectionContainer}>
-          {categories.map((item, index) => (
-            <TouchableOpacity key={index} style={styles.card} onPress={() => handleCategoryPress(item.name)}>
+          {categoriesData.map((item, index) => (
+            <TouchableOpacity key={index} style={styles.card} onPress={() =>{
+              const searchResult = getSearchResult(item.name);
+              if (searchResult && searchResult.type === "category") {
+                router.push({ pathname: "/list", params: { data: JSON.stringify(searchResult.data) } });
+              }
+            }}>
               <Image source={item.img} style={styles.image} />
               <View style={styles.textContainer}>
                 <Text style={styles.itemTitle}>{item.name}</Text>
