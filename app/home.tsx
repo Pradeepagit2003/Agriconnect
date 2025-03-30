@@ -33,22 +33,7 @@ const categories = [
 const HomeScreen = () => {
   const router = useRouter();
 
-  const handleCategoryPress = (categoryName) => {
-    let formattedRoute = categoryName.toLowerCase().replace(/\s+/g, "-");
-  
-    // Fixing specific category names to match file names
-    if (formattedRoute === "vegetables") formattedRoute = "vegetable";
-    if (formattedRoute === "millets") formattedRoute = "millet";
-  
-    router.push(`/${formattedRoute}`);
-  };
-
   const [searchQuery, setSearchQuery] = useState("");
-
-  // Filter products based on search input
-  const filteredProducts = vegetables.filter((item : any) =>
-    item.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
 
   const getSearchResult = (query: any) => {
     
