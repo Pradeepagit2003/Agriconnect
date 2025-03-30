@@ -11,14 +11,14 @@ import { router, useLocalSearchParams } from 'expo-router';
    tomatoview: { product: any }; // Define expected params for tomatoview
  };
  
- export default function VegetableScreen() {
+ export default function List() {
    const navigation = useNavigation<NavigationProp<RootStackParamList>>();
      const { data } = useLocalSearchParams(); // Get the passed product name
 
-     const selectedFarmer = Array.isArray(data) ? JSON.parse(data[0]) : JSON.parse(data);
+     const selected = Array.isArray(data) ? JSON.parse(data[0]) : JSON.parse(data);
      
         // **Handle case where product is not found**
-     if (!selectedFarmer) {
+     if (!selected) {
        return (
          <View style={styles.errorContainer}>
            <Text style={styles.errorText}>Product not found</Text>
@@ -34,7 +34,7 @@ import { router, useLocalSearchParams } from 'expo-router';
      <View style={styles.container}>
        {/* Header */}
        <View style={styles.header}>
-         <Text style={styles.headerTitle}>{selectedFarmer.name}</Text>
+         <Text style={styles.headerTitle}>{selected.name}</Text>
        </View>
  
        {/* Banner */}
@@ -48,7 +48,7 @@ import { router, useLocalSearchParams } from 'expo-router';
  
        {/* Product List */}
        <FlatList
-         data={selectedFarmer.products}
+         data={selected.products}
          keyExtractor={(item) => item.id}
          numColumns={2}
          renderItem={({ item }) => (

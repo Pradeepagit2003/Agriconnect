@@ -5,6 +5,18 @@ import TomatoImage from '../assets/images/tomato.png';
  import OnionImage from '../assets/images/onion.png';
  import CabbageImage from '../assets/images/cabbage.png';
  
+ export const categoriesData = [
+  { id: 1, name: "Vegetables", img: require("../assets/images/vegetables.jpg"), desc: "Fresh farm vegetables, straight to you!", route: "/vegetable" },
+  { id: 2, name: "Millets", img: require("../assets/images/millets.jpeg"), desc: "Nutritious farm-fresh millets, straight to you!", route: "/millets" },
+  { id: 3, name: "Fruits", img: require("../assets/images/fruits.jpeg"), desc: "Handpicked fresh fruits for a healthy life!", route: "/fruits" },
+  { id: 4, name: "Flowers", img: require("../assets/images/flowers.png"), desc: "Beautiful and fresh flowers for all occasions!", route: "/flowers" },
+  { id: 5, name: "Green Leafy Veg", img: require("../assets/images/leafy.jpeg"), desc: "Organic green leafy vegetables!", route: "/leafy" },
+  { id: 6, name: "Coconuts", img: require("../assets/images/coconut.png"), desc: "Fresh and natural coconuts!", route: "/coconuts" },
+  { id: 7, name: "Spices", img: require("../assets/images/spices.jpeg"), desc: "Authentic spices for a flavorful meal!", route: "/spices" },
+  { id: 8, name: "Pulses", img: require("../assets/images/pulses.jpg"), desc: "Healthy and nutritious pulses!", route: "/pulses" }
+];
+
+
  export const vegetables = [
      { id: '1', name: 'Tomato', quantity: '20kg', price: 24, oldPrice: 30, discount: '20%', rating: 4.3, image: TomatoImage },
      { id: '2', name: 'Eggplant', quantity: '30kg', price: 40, oldPrice: 45, discount: '11%', rating: 4.2, image: EggplantImage },

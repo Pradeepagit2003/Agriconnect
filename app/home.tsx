@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, Image, ScrollView, StyleSheet, TextInput, Dimensions, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
-import { farmerData, productData, vegetables } from "./data"
+import { farmerData, productData, vegetables, categoriesData } from "./data"
 import { FlatList } from "react-native";
 
 const { width } = Dimensions.get("window");
@@ -53,6 +53,13 @@ const HomeScreen = () => {
   const getSearchResult = (query: any) => {
     
     if (!query) return null;
+
+    // Check if query matches a category's name
+    const matchedCategory =farmerData.find((farmer) => farmer.name === query)
+  
+    if (matchedCategory) {
+      return { type: "category", data: matchedCategory };
+    }
   
     // Check if query matches a farmer's name
     const matchedFarmer =farmerData.find((farmer) => farmer.name === query)
@@ -101,7 +108,7 @@ const HomeScreen = () => {
 <View style={styles.searchResultsContainer}>
   {searchQuery.length > 0 && (
     <FlatList
-    data={[...vegetables, ...farmerData].filter((item: any) =>
+    data={[...vegetables, ...farmerData, ...categoriesData].filter((item: any) =>
       item.name.toLowerCase().includes(searchQuery.toLowerCase())
     )}
 
@@ -109,14 +116,11 @@ const HomeScreen = () => {
       renderItem={({ item }) => (
         <TouchableOpacity 
           style={styles.itemContainer} 
-          // onPress={() => router.push({ pathname: "/product", params: { data: item.name } })} // Navigate to product page
           onPress={() => {
-            
             const searchResult = getSearchResult(item.name);
-          
             if (searchResult) {
-              if (searchResult.type === "farmer") {
-                router.push({ pathname: "/farmerProductList", params: { data: JSON.stringify(searchResult.data) } });
+              if (searchResult.type === "farmer" || searchResult.type === "category") {
+                router.push({ pathname: "/list", params: { data: JSON.stringify(searchResult.data) } });
               } else if (searchResult.type === "product") {
                 router.push({ pathname: "/product", params: { data: JSON.stringify(searchResult.data) } });
               }
