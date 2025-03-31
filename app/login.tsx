@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   View,
   Text,
@@ -10,6 +11,7 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import axios from "axios";
+import { baseUrl } from "@/constants/api";
 
 const LoginScreen = () => {
   const router = useRouter();
@@ -23,11 +25,12 @@ const LoginScreen = () => {
     }
 
     try {
-      const response = await axios.post("http://192.168.1.5:8080/user/login", {
+      const response = await axios.post(baseUrl + "user/login", {
         email,
         password,
       });
       if (response.status === 200) {
+        await AsyncStorage.setItem("user", JSON.stringify(response.data.id));
         Alert.alert("Success", "Login successful!");
         router.push("/home");
       } else {

@@ -1,6 +1,16 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  Alert,
+} from "react-native";
 import { useRouter } from "expo-router";
+import axios from "axios";
+import { baseUrl } from "@/constants/api";
 
 const SignUpScreen = () => {
   const router = useRouter();
@@ -9,24 +19,46 @@ const SignUpScreen = () => {
   const [mobile, setMobile] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [category, setCategory] = useState("");
+  // const [category, setCategory] = useState("");
 
-  const handleSignUp = () => {
-    if (!username || !email || !mobile || !password || !confirmPassword || !category) {
+  const handleSignUp = async () => {
+    // if (!username || !email || !mobile || !password || !confirmPassword || !category) {
+    if (!username || !email || !mobile || !password || !confirmPassword) {
       Alert.alert("Error", "All fields are required");
       return;
     }
     if (password !== confirmPassword) {
       Alert.alert("Error", "Passwords do not match");
       return;
+    } else {
+      const user = {
+        userName: username,
+        email: email,
+        number: mobile,
+        password: password,
+        userType: "farmer",
+      };
+      try {
+        const response = await axios.post(baseUrl + "user", user);
+        if (response.status === 201) {
+          Alert.alert("Success", "Account created successful!");
+          router.push("/login");
+        } else {
+          Alert.alert("Error", response.data);
+        }
+      } catch (err) {
+        Alert.alert("Error", "Something went wrong");
+      }
     }
-    router.push("/home");
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.logoContainer}>
-        <Image source={require("../assets/images/logo.png")} style={styles.logo} />
+        <Image
+          source={require("../assets/images/logo.png")}
+          style={styles.logo}
+        />
         <Text style={styles.title}>AgriConnect</Text>
       </View>
 
@@ -34,19 +66,57 @@ const SignUpScreen = () => {
         <Text style={{ color: "green" }}>Register</Text> your account
       </Text>
 
-      <TextInput style={styles.input} placeholder="User name" placeholderTextColor="#999" value={username} onChangeText={setUsername} />
-      <TextInput style={styles.input} placeholder="Email" placeholderTextColor="#999" value={email} onChangeText={setEmail} />
-      <TextInput style={styles.input} placeholder="Mobile number" placeholderTextColor="#999" value={mobile} onChangeText={setMobile} />
-      <TextInput style={styles.input} placeholder="Password" placeholderTextColor="#999" secureTextEntry value={password} onChangeText={setPassword} />
-      <TextInput style={styles.input} placeholder="Confirm Password" placeholderTextColor="#999" secureTextEntry value={confirmPassword} onChangeText={setConfirmPassword} />
-      <TextInput style={styles.input} placeholder="Category (Farmer or Customer)" placeholderTextColor="#999" value={category} onChangeText={setCategory} />
+      <TextInput
+        style={styles.input}
+        placeholder="User name"
+        placeholderTextColor="#999"
+        value={username}
+        onChangeText={setUsername}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Email"
+        placeholderTextColor="#999"
+        value={email}
+        onChangeText={setEmail}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Mobile number"
+        placeholderTextColor="#999"
+        value={mobile}
+        onChangeText={setMobile}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Password"
+        placeholderTextColor="#999"
+        secureTextEntry
+        value={password}
+        onChangeText={setPassword}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Confirm Password"
+        placeholderTextColor="#999"
+        secureTextEntry
+        value={confirmPassword}
+        onChangeText={setConfirmPassword}
+      />
+      {/* <TextInput
+        style={styles.input}
+        placeholder="Category (Farmer or Customer)"
+        placeholderTextColor="#999"
+        value={category}
+        onChangeText={setCategory}
+      /> */}
 
       <TouchableOpacity style={styles.signUpButton} onPress={handleSignUp}>
         <Text style={styles.signUpButtonText}>Sign up</Text>
       </TouchableOpacity>
 
       <Text style={styles.signInText}>
-        Already have an account? 
+        Already have an account?
         <Text style={{ color: "green" }} onPress={() => router.push("/login")}>
           Sign in
         </Text>
