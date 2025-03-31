@@ -1,4 +1,4 @@
-const categories = [
+export const categories = [
     { name: "Vegetables", img: require("../assets/images/vegetables.jpg"), desc: "Fresh farm vegetables, straight to you!", route: "/vegetable" },
     { name: "Millets", img: require("../assets/images/millets.jpeg"), desc: "Nutritious farm-fresh millets, straight to you!", route: "/millets" },
     { name: "Fruits", img: require("../assets/images/fruits.jpeg"), desc: "Handpicked fresh fruits for a healthy life!", route: "/fruits" },
@@ -9,4 +9,3 @@ const categories = [
     { name: "Pulses", img: require("../assets/images/pulses.jpg"), desc: "Healthy and nutritious pulses!", route: "/pulses" }
   ];
   
-  console.log("Categories Array:", categories);
