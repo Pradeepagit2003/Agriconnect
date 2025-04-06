@@ -11,15 +11,30 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import { baseUrl } from "@/constants/api";
 
 // Define TypeScript type for cart items
 type CartItem = {
   id: number;
-  name: string;
-  price: number;
+  product: {
+    id: number;
+    userId: number;
+    name: string;
+    price: number;
+    discount: number;
+    offerPrice: number;
+    priceType: string;
+    noOfReviews: number;
+    rating: number;
+    availableQuantity: number;
+    img: string;
+    description: string;
+    category: string;
+    categoryId: number;
+  };
   quantity: number;
-  image: any;
-  inStock: boolean;
+  totalPrice: number;
 };
 
 // Define navigation type
@@ -30,128 +45,138 @@ type RootStackParamList = {
 const Cart = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-
-  const getValue = async () => {
-    const value = await AsyncStorage.getItem("user");
-    console.log(value);
+  const [userId, setUserId] = useState<null | string>(null);
+  const [quantityChange, setQuantityChange] = useState(0);
+  const [cartData, setCartData] = useState({
+    id: 0,
+    userId: 0,
+    totalPrice: 0,
+    cartItems: [
+      {
+        id: 1,
+        product: {
+          id: 1,
+          userId: 2,
+          name: "apple",
+          price: 20,
+          discount: 0,
+          offerPrice: 20,
+          priceType: "fixed",
+          noOfReviews: 2,
+          rating: 4.3,
+          availableQuantity: 300,
+          img: "https://i.ibb.co/dJ5wH33C/vegetable.jpg",
+          description: "Apple",
+          category: "vegetable",
+          categoryId: 1,
+        },
+        quantity: 0,
+        totalPrice: 0,
+      },
+    ],
+  });
+  const getCartData = async () => {
+    try {
+      const tempuserId = await AsyncStorage.getItem("user");
+      setUserId(tempuserId);
+      const response = await axios.get(baseUrl + "cart/" + tempuserId);
+      setCartData(response.data);
+    } catch (err) {
+      console.log(err);
+    }
   };
   useEffect(() => {
-    getValue();
-  }, []);
+    getCartData();
+  }, [quantityChange]);
 
-  // Sample cart data
-  const [cartItems, setCartItems] = useState<CartItem[]>([
-    {
-      id: 1,
-      name: "Tomato",
-      price: 24,
-      quantity: 15,
-      image: require("../assets/images/tomato.png"),
-      inStock: true,
-    },
-    {
-      id: 2,
-      name: "Finger-Ragi",
-      price: 100,
-      quantity: 70,
-      image: require("../assets/images/finger.png"),
-      inStock: true,
-    },
-  ]);
+  const updateItem = async (id: number, quantity: number) => {
+    try {
+      const response = await axios.put(
+        baseUrl +
+          "cart/" +
+          cartData.id +
+          "/update-item/" +
+          id +
+          "?quantity=" +
+          quantity
+      );
+      console.log(response);
+      setQuantityChange((prev) => prev + 1);
+      console.log("update");
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   // Function to increase quantity
-  const increaseQuantity = (id: number) => {
-    setCartItems((prevCart) =>
-      prevCart.map((item) =>
-        item.id === id ? { ...item, quantity: item.quantity + 1 } : item
-      )
-    );
+  const increaseQuantity = (item: CartItem) => {
+    updateItem(item.id, item.quantity + 1);
   };
 
   // Function to decrease quantity
-  const decreaseQuantity = (id: number) => {
-    setCartItems((prevCart) =>
-      prevCart.map((item) => {
-        if (item.id === id && item.quantity > 1) {
-          return { ...item, quantity: item.quantity - 1 };
-        }
-        return item;
-      })
-    );
+  const decreaseQuantity = (item: CartItem) => {
+    updateItem(item.id, item.quantity - 1);
   };
 
   // Function to remove item
   const removeItem = (id: number) => {
-    setCartItems((prevCart) => prevCart.filter((item) => item.id !== id));
+    // setCartItems((prevCart) => prevCart.filter((item) => item.id !== id));
+    console.log("remove");
   };
-
-  // Calculate total price
-  const totalPrice = cartItems.reduce(
-    (acc, item) => acc + item.price * item.quantity,
-    0
-  );
 
   return (
     <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <Ionicons name="arrow-back" size={24} color="black" />
-        <Text style={styles.headerTitle}>Cart</Text>
-      </View>
-
-      {/* Delivery Section */}
-      {/* <View style={styles.deliverySection}>
-        <View>
-          <Text style={styles.deliveryText}>Delivery to 639110</Text>
-          <Text style={styles.locationText}>Kulithalai</Text>
-        </View>
-        <TouchableOpacity style={styles.changeButton}>
-          <Text style={styles.changeButtonText}>Change</Text>
-        </TouchableOpacity>
-      </View> */}
-
       {/* Cart Items */}
       <ScrollView contentContainerStyle={styles.cartContainer}>
-        {cartItems.map((item) => (
-          <View key={item.id} style={styles.cartItem}>
-            <Image source={item.image} style={styles.itemImage} />
-            <View style={styles.itemDetails}>
-              <Text style={styles.itemName}>{item.name}</Text>
-              <Text style={styles.itemPrice}>Price: ₹{item.price}/kg</Text>
-              <Text style={styles.deliveryDate}>
-                🚚 Delivery by Wed, 19 Mar
-              </Text>
-              <Text style={styles.stockStatus}>In Stock</Text>
-              <View style={styles.quantityContainer}>
-                <Text>Quantity:</Text>
-                <TouchableOpacity
-                  onPress={() => decreaseQuantity(item.id)}
-                  style={styles.quantityButton}
-                >
-                  <Text style={styles.quantityText}>-</Text>
-                </TouchableOpacity>
-                <Text style={styles.quantityValue}>{item.quantity}</Text>
-                <TouchableOpacity
-                  onPress={() => increaseQuantity(item.id)}
-                  style={styles.quantityButton}
-                >
-                  <Text style={styles.quantityText}>+</Text>
-                </TouchableOpacity>
-              </View>
-              <Text style={styles.itemTotal}>
-                You Pay ₹{item.price * item.quantity}
-              </Text>
-            </View>
-            <TouchableOpacity onPress={() => removeItem(item.id)}>
-              <Ionicons name="trash-outline" size={22} color="black" />
-            </TouchableOpacity>
+        {cartData.cartItems.length === 0 ? (
+          <View style={styles.emptyCart}>
+            <Text style={styles.emptyText}>🛒 Your cart is empty</Text>
           </View>
-        ))}
+        ) : (
+          cartData.cartItems.map((item) => (
+            <View key={item.id} style={styles.cartItem}>
+              <Image
+                source={{ uri: item.product.img }}
+                style={styles.itemImage}
+              />
+              <View style={styles.itemDetails}>
+                <Text style={styles.itemName}>{item.product.name}</Text>
+                <Text style={styles.itemPrice}>
+                  Price: ₹{item.product.price}/kg
+                </Text>
+                <Text style={styles.deliveryDate}>
+                  🚚 Delivery by Wed, 19 Mar
+                </Text>
+                <Text style={styles.stockStatus}>In Stock</Text>
+                <View style={styles.quantityContainer}>
+                  <Text>Quantity:</Text>
+                  <TouchableOpacity
+                    onPress={() => decreaseQuantity(item)}
+                    style={styles.quantityButton}
+                  >
+                    <Text style={styles.quantityText}>-</Text>
+                  </TouchableOpacity>
+                  <Text style={styles.quantityValue}>{item.quantity}</Text>
+                  <TouchableOpacity
+                    onPress={() => increaseQuantity(item)}
+                    style={styles.quantityButton}
+                  >
+                    <Text style={styles.quantityText}>+</Text>
+                  </TouchableOpacity>
+                </View>
+                <Text style={styles.itemTotal}>You Pay ₹{item.totalPrice}</Text>
+              </View>
+              <TouchableOpacity onPress={() => removeItem(item.id)}>
+                <Ionicons name="trash-outline" size={22} color="black" />
+              </TouchableOpacity>
+            </View>
+          ))
+        )}
       </ScrollView>
 
       {/* Total & Checkout */}
       <View style={styles.footer}>
-        <Text style={styles.totalPrice}>₹{totalPrice}</Text>
+        <Text style={styles.totalPrice}>₹{cartData.totalPrice}</Text>
         <Text style={styles.totalText}>Total Price + Delivery Charge</Text>
         <TouchableOpacity
           style={styles.checkoutButton}
@@ -226,7 +251,17 @@ const styles = StyleSheet.create({
   quantityText: { fontSize: 18, fontWeight: "bold" },
   quantityValue: { fontSize: 16, fontWeight: "bold" },
   itemTotal: { fontSize: 14, fontWeight: "bold", marginTop: 5 },
-
+  emptyCart: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 50,
+  },
+  emptyText: {
+    fontSize: 18,
+    color: "#888",
+    textAlign: "center",
+  },
   // Footer
   footer: {
     position: "absolute",
