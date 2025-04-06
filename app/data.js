@@ -1,46 +1,200 @@
-import TomatoImage from '../assets/images/tomato.png';
- import EggplantImage from '../assets/images/eggplant.png';
- import PotatoImage from '../assets/images/potato.png';
- import CarrotImage from '../assets/images/carrot.png';
- import OnionImage from '../assets/images/onion.png';
- import CabbageImage from '../assets/images/cabbage.png';
- 
- export const categoriesData = [
-  { id: 1, name: "Vegetables", img: require("../assets/images/vegetables.jpg"), desc: "Fresh farm vegetables, straight to you!", route: "/vegetable", products:[
-   { id: '1', name: 'Tomato', quantity: '20kg', price: 24, oldPrice: 30, discount: '20%', rating: 4.3, image: TomatoImage },
-     { id: '2', name: 'Eggplant', quantity: '30kg', price: 40, oldPrice: 45, discount: '11%', rating: 4.2, image: EggplantImage },
-     { id: '3', name: 'Potato', quantity: '32kg', price: 62, oldPrice: 70, discount: '12%', rating: 4.1, image: PotatoImage },
-     { id: '4', name: 'Carrot', quantity: '25kg', price: 52, oldPrice: 55, discount: '5%', rating: 4.8, image: CarrotImage },
-     { id: '5', name: 'Onion', quantity: '40kg', price: 65, oldPrice: 70, discount: '7%', rating: 4.5, image: OnionImage },
-     { id: '6', name: 'Cabbage', quantity: '22kg', price: 32, oldPrice: 35, discount: '8%', rating: 4.7, image: CabbageImage },
-  ] },
-  { id: 2, name: "Millets", img: require("../assets/images/millets.jpeg"), desc: "Nutritious farm-fresh millets, straight to you!", route: "/millets" },
-  { id: 3, name: "Fruits", img: require("../assets/images/fruits.jpeg"), desc: "Handpicked fresh fruits for a healthy life!", route: "/fruits" },
-  { id: 4, name: "Flowers", img: require("../assets/images/flowers.png"), desc: "Beautiful and fresh flowers for all occasions!", route: "/flowers" },
-  { id: 5, name: "Green Leafy Veg", img: require("../assets/images/leafy.jpeg"), desc: "Organic green leafy vegetables!", route: "/leafy" },
-  { id: 6, name: "Coconuts", img: require("../assets/images/coconut.png"), desc: "Fresh and natural coconuts!", route: "/coconuts" },
-  { id: 7, name: "Spices", img: require("../assets/images/spices.jpeg"), desc: "Authentic spices for a flavorful meal!", route: "/spices" },
-  { id: 8, name: "Pulses", img: require("../assets/images/pulses.jpg"), desc: "Healthy and nutritious pulses!", route: "/pulses" }
+import TomatoImage from "../assets/images/tomato.png";
+import EggplantImage from "../assets/images/eggplant.png";
+import PotatoImage from "../assets/images/potato.png";
+import CarrotImage from "../assets/images/carrot.png";
+import OnionImage from "../assets/images/onion.png";
+import CabbageImage from "../assets/images/cabbage.png";
+
+export const categoriesData = [
+  {
+    id: 1,
+    name: "Vegetables",
+    img: require("../assets/images/vegetables.jpg"),
+    description: "Fresh farm vegetables, straight to you!",
+    // route: "/vegetable",
+    // products: [
+    //   {
+    //     id: "1",
+    //     name: "Tomato",
+    //     quantity: "20kg",
+    //     price: 24,
+    //     oldPrice: 30,
+    //     discount: "20%",
+    //     rating: 4.3,
+    //     image: TomatoImage,
+    //   },
+    //   {
+    //     id: "2",
+    //     name: "Eggplant",
+    //     quantity: "30kg",
+    //     price: 40,
+    //     oldPrice: 45,
+    //     discount: "11%",
+    //     rating: 4.2,
+    //     image: EggplantImage,
+    //   },
+    //   {
+    //     id: "3",
+    //     name: "Potato",
+    //     quantity: "32kg",
+    //     price: 62,
+    //     oldPrice: 70,
+    //     discount: "12%",
+    //     rating: 4.1,
+    //     image: PotatoImage,
+    //   },
+    //   {
+    //     id: "4",
+    //     name: "Carrot",
+    //     quantity: "25kg",
+    //     price: 52,
+    //     oldPrice: 55,
+    //     discount: "5%",
+    //     rating: 4.8,
+    //     image: CarrotImage,
+    //   },
+    //   {
+    //     id: "5",
+    //     name: "Onion",
+    //     quantity: "40kg",
+    //     price: 65,
+    //     oldPrice: 70,
+    //     discount: "7%",
+    //     rating: 4.5,
+    //     image: OnionImage,
+    //   },
+    //   {
+    //     id: "6",
+    //     name: "Cabbage",
+    //     quantity: "22kg",
+    //     price: 32,
+    //     oldPrice: 35,
+    //     discount: "8%",
+    //     rating: 4.7,
+    //     image: CabbageImage,
+    //   },
+    // ],
+  },
+  {
+    id: 2,
+    name: "Millets",
+    img: require("../assets/images/millets.jpeg"),
+    description: "Nutritious farm-fresh millets, straight to you!",
+    // route: "/millets",
+  },
+  {
+    id: 3,
+    name: "Fruits",
+    img: require("../assets/images/fruits.jpeg"),
+    description: "Handpicked fresh fruits for a healthy life!",
+    // route: "/fruits",
+  },
+  {
+    id: 4,
+    name: "Flowers",
+    img: require("../assets/images/flowers.png"),
+    description: "Beautiful and fresh flowers for all occasions!",
+    // route: "/flowers",
+  },
+  {
+    id: 5,
+    name: "Green Leafy Veg",
+    img: require("../assets/images/leafy.jpeg"),
+    description: "Organic green leafy vegetables!",
+    // route: "/leafy",
+  },
+  {
+    id: 6,
+    name: "Coconuts",
+    img: require("../assets/images/coconut.png"),
+    description: "Fresh and natural coconuts!",
+    // route: "/coconuts",
+  },
+  {
+    id: 7,
+    name: "Spices",
+    img: require("../assets/images/spices.jpeg"),
+    description: "Authentic spices for a flavorful meal!",
+    // route: "/spices",
+  },
+  {
+    id: 8,
+    name: "Pulses",
+    img: require("../assets/images/pulses.jpg"),
+    description: "Healthy and nutritious pulses!",
+    // route: "/pulses",
+  },
 ];
 
+export const vegetables = [
+  {
+    id: "1",
+    name: "Tomato",
+    quantity: "20kg",
+    price: 24,
+    oldPrice: 30,
+    discount: "20%",
+    rating: 4.3,
+    image: TomatoImage,
+  },
+  {
+    id: "2",
+    name: "Eggplant",
+    quantity: "30kg",
+    price: 40,
+    oldPrice: 45,
+    discount: "11%",
+    rating: 4.2,
+    image: EggplantImage,
+  },
+  {
+    id: "3",
+    name: "Potato",
+    quantity: "32kg",
+    price: 62,
+    oldPrice: 70,
+    discount: "12%",
+    rating: 4.1,
+    image: PotatoImage,
+  },
+  {
+    id: "4",
+    name: "Carrot",
+    quantity: "25kg",
+    price: 52,
+    oldPrice: 55,
+    discount: "5%",
+    rating: 4.8,
+    image: CarrotImage,
+  },
+  {
+    id: "5",
+    name: "Onion",
+    quantity: "40kg",
+    price: 65,
+    oldPrice: 70,
+    discount: "7%",
+    rating: 4.5,
+    image: OnionImage,
+  },
+  {
+    id: "6",
+    name: "Cabbage",
+    quantity: "22kg",
+    price: 32,
+    oldPrice: 35,
+    discount: "8%",
+    rating: 4.7,
+    image: CabbageImage,
+  },
+];
 
- export const vegetables = [
-     { id: '1', name: 'Tomato', quantity: '20kg', price: 24, oldPrice: 30, discount: '20%', rating: 4.3, image: TomatoImage },
-     { id: '2', name: 'Eggplant', quantity: '30kg', price: 40, oldPrice: 45, discount: '11%', rating: 4.2, image: EggplantImage },
-     { id: '3', name: 'Potato', quantity: '32kg', price: 62, oldPrice: 70, discount: '12%', rating: 4.1, image: PotatoImage },
-     { id: '4', name: 'Carrot', quantity: '25kg', price: 52, oldPrice: 55, discount: '5%', rating: 4.8, image: CarrotImage },
-     { id: '5', name: 'Onion', quantity: '40kg', price: 65, oldPrice: 70, discount: '7%', rating: 4.5, image: OnionImage },
-     { id: '6', name: 'Cabbage', quantity: '22kg', price: 32, oldPrice: 35, discount: '8%', rating: 4.7, image: CabbageImage },
- ];
- 
 //  import FingerMilletImage from '../assets/images/finger.png';
 //  import FoxtailMilletImage from '../assets/images/foxtail.png';
 //  import KodoMilletImage from '../assets/images/kodo.png';
 //  import PearlMilletImage from '../assets/images/pearl.png';
 //  import BarnyardMilletImage from '../assets/images/barnyard.png';
- 
- 
- 
+
 //  export const millets = [
 //      { id: '7', name: 'Finger Millet', quantity: '15kg', price: 50, oldPrice: 60, discount: '17%', rating: 4.6, image: FingerMilletImage },
 //      { id: '8', name: 'Foxtail Millet', quantity: '18kg', price: 55, oldPrice: 65, discount: '15%', rating: 4.4, image: FoxtailMilletImage },
@@ -129,7 +283,6 @@ export const productData = [
       },
     ],
   },
-
 ];
 
 export const farmerData = [

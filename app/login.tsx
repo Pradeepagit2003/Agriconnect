@@ -30,7 +30,7 @@ const LoginScreen = () => {
         password,
       });
       if (response.status === 200) {
-        await AsyncStorage.setItem("user", JSON.stringify(response.data.id));
+        // await AsyncStorage.setItem("user", JSON.stringify(response.data.id));
         Alert.alert("Success", "Login successful!");
         router.push("/home");
       } else {
