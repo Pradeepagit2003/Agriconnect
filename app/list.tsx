@@ -12,6 +12,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import axios from "axios";
 import { baseUrl } from "@/constants/api";
 import { productData } from "./data.js";
+import { red } from "react-native-reanimated/lib/typescript/Colors.js";
 
 // Define product type
 type Product = {
@@ -20,6 +21,7 @@ type Product = {
   price: number;
   availableQuantity: number;
   img: string;
+  userName: string;
   empty?: boolean;
 };
 
@@ -123,10 +125,10 @@ export default function List() {
             <TouchableOpacity
               style={styles.card}
               onPress={() => {
-                const searchResult = getSearchResult(item.name);
+                // const searchResult = getSearchResult(item.name);
                 router.push({
                   pathname: "/product",
-                  params: { data: JSON.stringify(searchResult) },
+                  params: { data: JSON.stringify(item.id) },
                 });
               }}
             >
@@ -135,6 +137,7 @@ export default function List() {
                 <Image source={{ uri: item.img }} style={styles.productImage} />
               </View>
               <View style={styles.bottomRow}>
+                <Text style={styles.farmerName}>{item.userName}</Text>
                 <Text style={styles.productInfo}>
                   Available: {item.availableQuantity} kg
                 </Text>
@@ -161,9 +164,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     height: 80,
   },
+  farmerName: {
+    fontSize: 16,
+    margin: 2,
+    textTransform: "capitalize",
+    color: "#a9a9a9",
+  },
   headerTitle: {
     fontSize: 20,
     fontWeight: "bold",
+    textTransform: "capitalize",
     color: "white",
     marginLeft: 20,
   },
@@ -195,7 +205,12 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: "100%",
   },
-  productName: { fontSize: 20, fontWeight: "bold", flex: 1 },
+  productName: {
+    fontSize: 20,
+    fontWeight: "bold",
+    flex: 1,
+    textTransform: "capitalize",
+  },
   productImage: { width: 50, height: 50, resizeMode: "contain" },
   bottomRow: { flexDirection: "column", width: "100%", marginTop: 5 },
   productInfo: { fontSize: 16 },

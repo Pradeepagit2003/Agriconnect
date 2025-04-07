@@ -206,7 +206,7 @@ export const productData = [
   {
     id: 1,
     name: "Tomato",
-    variety: "Desi Varieties",
+    category: "Desi Varieties",
     marketPrice: 30,
     discount: 20,
     image: require("../assets/images/tomato.png"),
@@ -214,19 +214,12 @@ export const productData = [
       "The tomato is a nutrient-rich fruit used as a vegetable, packed with vitamins and antioxidants. It’s versatile, eaten raw or cooked in various dishes worldwide.",
     deliveryLocation: "639110, Kulithalai",
     rating: 4.3,
-    reviews: [
-      {
-        user: "Dayalan",
-        verified: true,
-        date: "12/03/2023",
-        text: "Absolutely delicious! The tomatoes were fresh, tangy, and had the perfect balance of sweetness and acidity. Great for both raw consumption and cooking.",
-      },
-    ],
+    reviews: 1,
   },
   {
     id: 2,
     name: "Potato",
-    variety: "Organic",
+    category: "Organic",
     marketPrice: 40,
     discount: 15,
     image: require("../assets/images/potato.png"),
@@ -234,19 +227,12 @@ export const productData = [
       "Potatoes are a staple in many diets worldwide, rich in carbohydrates and essential nutrients. They can be boiled, fried, or mashed for various delicious dishes.",
     deliveryLocation: "639110, Kulithalai",
     rating: 4.5,
-    reviews: [
-      {
-        user: "Anand",
-        verified: true,
-        date: "15/04/2023",
-        text: "Very fresh and organic! The taste is amazing when cooked. Definitely a good buy.",
-      },
-    ],
+    reviews: 2,
   },
   {
     id: 3,
     name: "Carrot",
-    variety: "Ooty Carrots",
+    category: "Ooty Carrots",
     marketPrice: 50,
     discount: 10,
     image: require("../assets/images/carrot.png"),
@@ -254,19 +240,12 @@ export const productData = [
       "Carrots are rich in beta-carotene, vitamins, and fiber. They are excellent for vision and overall health. Enjoy them raw, steamed, or in soups and salads.",
     deliveryLocation: "639110, Kulithalai",
     rating: 4.7,
-    reviews: [
-      {
-        user: "Sanjay",
-        verified: true,
-        date: "02/05/2023",
-        text: "These carrots are so fresh and naturally sweet! Perfect for juices and salads.",
-      },
-    ],
+    reviews: 2,
   },
   {
     id: 4,
     name: "Onion",
-    variety: "Red Onion",
+    category: "Red Onion",
     marketPrice: 45,
     discount: 12,
     image: require("../assets/images/onion.png"),
@@ -274,14 +253,7 @@ export const productData = [
       "Red onions add a flavorful punch to any dish. Packed with antioxidants, they are great for health and enhance the taste of curries, salads, and more.",
     deliveryLocation: "639110, Kulithalai",
     rating: 4.4,
-    reviews: [
-      {
-        user: "Priya",
-        verified: true,
-        date: "20/06/2023",
-        text: "Nice and fresh! The onions had a strong aroma and enhanced my dishes very well.",
-      },
-    ],
+    reviews: 2,
   },
 ];
 
@@ -296,7 +268,7 @@ export const farmerData = [
       {
         id: 101,
         name: "Tomato",
-        variety: "Desi Varieties",
+        category: "Desi Varieties",
         marketPrice: 30,
         discount: 20,
         price: 24, // Price after discount
@@ -309,7 +281,7 @@ export const farmerData = [
       {
         id: 102,
         name: "Potato",
-        variety: "Organic",
+        category: "Organic",
         marketPrice: 40,
         discount: 15,
         price: 34, // Price after discount
@@ -331,7 +303,7 @@ export const farmerData = [
       {
         id: 103,
         name: "Carrot",
-        variety: "Ooty Carrots",
+        category: "Ooty Carrots",
         marketPrice: 50,
         discount: 10,
         price: 45, // Price after discount
@@ -344,7 +316,7 @@ export const farmerData = [
       {
         id: 104,
         name: "Onion",
-        variety: "Red Onion",
+        category: "Red Onion",
         marketPrice: 45,
         discount: 12,
         price: 39.6, // Price after discount
@@ -366,7 +338,7 @@ export const farmerData = [
       {
         id: 105,
         name: "Cabbage",
-        variety: "Green Cabbage",
+        category: "Green Cabbage",
         marketPrice: 35,
         discount: 10,
         price: 31.5, // Price after discount
@@ -379,7 +351,7 @@ export const farmerData = [
       {
         id: 106,
         name: "Brinjal",
-        variety: "Purple Brinjal",
+        category: "Purple Brinjal",
         marketPrice: 25,
         discount: 5,
         price: 23.75, // Price after discount

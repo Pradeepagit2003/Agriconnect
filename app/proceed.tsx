@@ -15,7 +15,7 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 const CartScreen = () => {
   const [quantity, setQuantity] = useState(15);
   const [isModalVisible, setModalVisible] = useState(false);
-  const router = useRouter(); // ✅ FIX: Use Expo Router
+  const router = useRouter();
 
   return (
     <View style={styles.container}>
