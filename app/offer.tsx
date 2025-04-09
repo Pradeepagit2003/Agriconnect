@@ -51,20 +51,20 @@ const OfferScreen = () => {
           placeholder="Search for all Product"
         />
       </View>
-
-      {/* Best Offer Banner */}
-      <View style={styles.bannerContainer}>
-        <Image
-          source={require("../assets/images/farmer.png")}
-          style={styles.bannerImage}
-        />
-        <View style={styles.bannerTextContainer}>
-          <Text style={styles.bestOfferText}>BEST OFFER</Text>
+      <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom: 80 }}>
+        {/* Best Offer Banner */}
+        <View style={styles.bannerContainer}>
+          <Image
+            source={require("../assets/images/farmer.png")}
+            style={styles.bannerImage}
+          />
+          <View style={styles.bannerTextContainer}>
+            <Text style={styles.bestOfferText}>BEST OFFER</Text>
+          </View>
         </View>
-      </View>
 
-      {/* Category Filters */}
-      {/* <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryContainer}>
+        {/* Category Filters */}
+        {/* <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryContainer}>
          {["Vegetables", "Fruits", "Flowers", "Millets"].map((item, index) => (
            <TouchableOpacity key={index} style={styles.categoryButton}>
              <Text style={styles.categoryText}>{item}</Text>
@@ -72,8 +72,7 @@ const OfferScreen = () => {
          ))}
        </ScrollView> */}
 
-      {/* Product List */}
-      <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom: 80 }}>
+        {/* Product List */}
         {products.map((item) => (
           <View style={styles.productCard} key={item.id}>
             <Image source={item.image} style={styles.productImage} />

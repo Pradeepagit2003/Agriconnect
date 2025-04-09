@@ -13,6 +13,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { baseUrl } from "@/constants/api";
+import { useRouter } from "expo-router";
 
 // Define TypeScript type for cart items
 type CartItem = {
@@ -43,8 +44,7 @@ type RootStackParamList = {
 };
 
 const Cart = () => {
-  const navigation =
-    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const router = useRouter();
   const [userId, setUserId] = useState<null | string>(null);
   const [quantityChange, setQuantityChange] = useState(0);
   const [cartData, setCartData] = useState({
@@ -57,6 +57,7 @@ const Cart = () => {
         product: {
           id: 1,
           userId: 2,
+          userName: "farmer",
           name: "apple",
           price: 20,
           discount: 0,
@@ -100,9 +101,18 @@ const Cart = () => {
           "?quantity=" +
           quantity
       );
-      console.log(response);
       setQuantityChange((prev) => prev + 1);
-      console.log("update");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const deleteCartItem = async (itemId: number) => {
+    try {
+      const response = await axios.delete(
+        baseUrl + "cart/" + cartData.id + "?itemId=" + itemId
+      );
+      setCartData(response.data);
     } catch (err) {
       console.log(err);
     }
@@ -115,6 +125,9 @@ const Cart = () => {
 
   // Function to decrease quantity
   const decreaseQuantity = (item: CartItem) => {
+    if (item.quantity === 1) {
+      return;
+    }
     updateItem(item.id, item.quantity - 1);
   };
 
@@ -122,6 +135,7 @@ const Cart = () => {
   const removeItem = (id: number) => {
     // setCartItems((prevCart) => prevCart.filter((item) => item.id !== id));
     console.log("remove");
+    deleteCartItem(id);
   };
 
   return (
@@ -141,6 +155,7 @@ const Cart = () => {
               />
               <View style={styles.itemDetails}>
                 <Text style={styles.itemName}>{item.product.name}</Text>
+                <Text style={styles.farmerName}>{item.product.userName}</Text>
                 <Text style={styles.itemPrice}>
                   Price: ₹{item.product.price}/kg
                 </Text>
@@ -180,7 +195,7 @@ const Cart = () => {
         <Text style={styles.totalText}>Total Price + Delivery Charge</Text>
         <TouchableOpacity
           style={styles.checkoutButton}
-          onPress={() => navigation.navigate("proceed")}
+          onPress={() => router.push("/payment")}
         >
           <Text style={styles.checkoutButtonText}>Proceed to Pay →</Text>
         </TouchableOpacity>
@@ -232,7 +247,12 @@ const styles = StyleSheet.create({
   },
   itemImage: { width: 80, height: 80, borderRadius: 10, marginRight: 10 },
   itemDetails: { flex: 1 },
-  itemName: { fontSize: 16, fontWeight: "bold" },
+  itemName: { fontSize: 16, fontWeight: "bold", textTransform: "capitalize" },
+  farmerName: {
+    fontSize: 12,
+    fontWeight: "500",
+    textTransform: "capitalize",
+  },
   itemPrice: { fontSize: 14, color: "#333" },
   deliveryDate: { fontSize: 12, color: "gray", marginBottom: 5 },
   stockStatus: { fontSize: 12, color: "green", fontWeight: "bold" },

@@ -49,6 +49,7 @@ const HomeScreen = () => {
     try {
       const response = await axios.get(baseUrl + "category");
       setCategoriesList(response.data);
+      console.log(categoriesList);
     } catch (err) {
       console.log(err);
       setCategoriesList([]);

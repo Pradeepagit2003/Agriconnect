@@ -5,7 +5,6 @@ import {
   Text,
   Image,
   TouchableOpacity,
-  TextInput,
   StyleSheet,
   ScrollView,
   Modal,
@@ -13,15 +12,25 @@ import {
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 const CartScreen = () => {
-  const [quantity, setQuantity] = useState(15);
   const [isModalVisible, setModalVisible] = useState(false);
   const router = useRouter();
+
+  const totalAmount = 7360;
+
+  const handleNavigate = (path: any) => {
+    setModalVisible(false);
+    setTimeout(() => {
+      router.push(path);
+    }, 300); // Wait for modal to close before navigating
+  };
 
   return (
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <Icon name="arrow-left" size={24} />
+        <TouchableOpacity onPress={() => router.back()}>
+          <Icon name="arrow-left" size={24} />
+        </TouchableOpacity>
         <Text style={styles.headerText}>Cart</Text>
       </View>
 
@@ -37,79 +46,6 @@ const CartScreen = () => {
             <Text style={styles.changeText}>Change</Text>
           </TouchableOpacity>
         </View>
-
-        {/* Product Card - Tomato */}
-        <View style={styles.productCard}>
-          <Image
-            source={require("../assets/images/tomato.png")}
-            style={styles.productImage}
-          />
-          <View style={styles.productDetails}>
-            <Text style={styles.productTitle}>Tomato</Text>
-            <Text style={styles.productPrice}>Price: ₹24/kg</Text>
-            <Text style={styles.deliveryDate}>Delivery by Wed, 19 Mar</Text>
-            <Text style={styles.inStock}>In Stock</Text>
-
-            {/* Quantity Selector */}
-            <View style={styles.quantityContainer}>
-              <TouchableOpacity
-                onPress={() => setQuantity(quantity > 1 ? quantity - 1 : 1)}
-              >
-                <Icon name="minus-circle" size={22} color="#888" />
-              </TouchableOpacity>
-              <TextInput
-                style={styles.quantityInput}
-                value={String(quantity)}
-                editable={false}
-              />
-              <TouchableOpacity onPress={() => setQuantity(quantity + 1)}>
-                <Icon name="plus-circle" size={22} color="#888" />
-              </TouchableOpacity>
-            </View>
-
-            {/* Price */}
-            <Text style={styles.totalPrice}>₹360</Text>
-          </View>
-          <TouchableOpacity>
-            <Icon name="trash-can-outline" size={24} color="#888" />
-          </TouchableOpacity>
-        </View>
-        {/* Product Card - Finger Millet (Ragi) */}
-        <View style={styles.productCard}>
-          <Image
-            source={require("../assets/images/finger.png")} // Ensure the image exists
-            style={styles.productImage}
-          />
-          <View style={styles.productDetails}>
-            <Text style={styles.productTitle}>Finger Millet (Ragi)</Text>
-            <Text style={styles.productPrice}>Price: ₹45/kg</Text>
-            <Text style={styles.deliveryDate}>Delivery by Thu, 20 Mar</Text>
-            <Text style={styles.inStock}>In Stock</Text>
-
-            {/* Quantity Selector */}
-            <View style={styles.quantityContainer}>
-              <TouchableOpacity
-                onPress={() => setQuantity(quantity > 1 ? quantity - 1 : 1)}
-              >
-                <Icon name="minus-circle" size={22} color="#888" />
-              </TouchableOpacity>
-              <TextInput
-                style={styles.quantityInput}
-                value={String(quantity)}
-                editable={false}
-              />
-              <TouchableOpacity onPress={() => setQuantity(quantity + 1)}>
-                <Icon name="plus-circle" size={22} color="#888" />
-              </TouchableOpacity>
-            </View>
-
-            {/* Price */}
-            <Text style={styles.totalPrice}>₹675</Text>
-          </View>
-          <TouchableOpacity>
-            <Icon name="trash-can-outline" size={24} color="#888" />
-          </TouchableOpacity>
-        </View>
       </ScrollView>
 
       {/* Checkout Button */}
@@ -117,7 +53,7 @@ const CartScreen = () => {
         style={styles.checkoutButton}
         onPress={() => setModalVisible(true)}
       >
-        <Text style={styles.checkoutText}>Proceed to Pay ₹7,360</Text>
+        <Text style={styles.checkoutText}>Proceed to Pay ₹{totalAmount}</Text>
       </TouchableOpacity>
 
       {/* Payment Modal */}
@@ -129,35 +65,39 @@ const CartScreen = () => {
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
+            {/* Close Button */}
             <TouchableOpacity onPress={() => setModalVisible(false)}>
               <Icon name="close" size={24} />
             </TouchableOpacity>
-            <Text style={styles.modalTitle}>Complete Payment:</Text>
-            <Text style={styles.modalAmount}>₹7,360</Text>
 
-            {/* Payment Method Change */}
+            <Text style={styles.modalTitle}>Complete Payment:</Text>
+            <Text style={styles.modalAmount}>₹{totalAmount}</Text>
+
+            {/* Payment Method Row */}
             <View style={styles.modalRow}>
               <Icon name="credit-card" size={24} />
               <Text style={styles.modalText}>Paying via Google Pay</Text>
-              <TouchableOpacity onPress={() => router.push("/payment")}>
+              <TouchableOpacity onPress={() => handleNavigate("/payment")}>
                 <Text style={styles.changeText}>Change</Text>
               </TouchableOpacity>
             </View>
 
-            {/* Address Change */}
+            {/* Address Row */}
             <View style={styles.modalRow}>
               <Icon name="map-marker" size={24} />
               <Text style={styles.modalText}>
                 Delivery to Kulithalai, 639110
               </Text>
-              <TouchableOpacity onPress={() => router.push("../address")}>
+              <TouchableOpacity onPress={() => handleNavigate("../address")}>
                 <Text style={styles.changeText}>Change</Text>
               </TouchableOpacity>
             </View>
 
-            {/* Confirm Payment */}
+            {/* Final Payment Button */}
             <TouchableOpacity style={styles.paymentButton}>
-              <Text style={styles.paymentText}>Proceed to Pay ₹7,360</Text>
+              <Text style={styles.paymentText}>
+                Proceed to Pay ₹{totalAmount}
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -205,55 +145,6 @@ const styles = StyleSheet.create({
     color: "#007BFF",
     fontWeight: "bold",
   },
-  productCard: {
-    flexDirection: "row",
-    backgroundColor: "#fff",
-    padding: 12,
-    borderRadius: 8,
-    elevation: 2,
-    marginVertical: 8,
-  },
-  productImage: {
-    width: 80,
-    height: 80,
-    borderRadius: 8,
-  },
-  productDetails: {
-    flex: 1,
-    marginLeft: 12,
-  },
-  productTitle: {
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  productPrice: {
-    color: "#555",
-  },
-  deliveryDate: {
-    color: "green",
-  },
-  inStock: {
-    color: "green",
-    fontWeight: "bold",
-  },
-  quantityContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginTop: 5,
-  },
-  quantityInput: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    padding: 5,
-    width: 40,
-    textAlign: "center",
-    marginHorizontal: 5,
-  },
-  totalPrice: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginTop: 5,
-  },
   checkoutButton: {
     backgroundColor: "#28a745",
     padding: 12,
@@ -281,6 +172,7 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 18,
     fontWeight: "bold",
+    marginTop: 10,
   },
   modalAmount: {
     fontSize: 22,
@@ -295,6 +187,8 @@ const styles = StyleSheet.create({
   },
   modalText: {
     fontSize: 16,
+    flex: 1,
+    marginHorizontal: 10,
   },
   paymentButton: {
     backgroundColor: "#28a745",
