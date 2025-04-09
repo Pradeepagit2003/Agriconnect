@@ -1,24 +1,53 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  Alert,
+} from "react-native";
 import { useRouter } from "expo-router";
+import axios from "axios";
+import { baseUrl } from "@/constants/api";
 
 const LoginScreen = () => {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = () => {
+  const handleAuthLogin = async () => {
     if (!email.trim() || !password.trim()) {
       Alert.alert("Error", "Please enter both email and password.");
       return;
     }
-    router.push("/home");
+
+    try {
+      const response = await axios.post(baseUrl + "user/login", {
+        email,
+        password,
+      });
+      if (response.status === 200) {
+        await AsyncStorage.setItem("user", JSON.stringify(response.data.id));
+        Alert.alert("Success", "Login successful!");
+        router.push("/home");
+      } else {
+        Alert.alert("Error", "Invalid credentials. Please try again.");
+      }
+    } catch (error) {
+      Alert.alert("Error", "Something went wrong. Please try again.");
+    }
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.logoContainer}>
-        <Image source={require("../assets/images/logo.png")} style={styles.logo} />
+        <Image
+          source={require("../assets/images/logo.png")}
+          style={styles.logo}
+        />
         <Text style={styles.title}>AgriConnect</Text>
       </View>
 
@@ -26,32 +55,32 @@ const LoginScreen = () => {
         <Text style={{ color: "green" }}>Log in</Text> to your account
       </Text>
 
-      <TextInput 
-        style={styles.input} 
-        placeholder="Email" 
-        placeholderTextColor="#999" 
-        value={email} 
-        onChangeText={setEmail} 
+      <TextInput
+        style={styles.input}
+        placeholder="Email"
+        placeholderTextColor="#999"
+        value={email}
+        onChangeText={setEmail}
       />
-      <TextInput 
-        style={styles.input} 
-        placeholder="Password" 
-        placeholderTextColor="#999" 
-        secureTextEntry 
-        value={password} 
-        onChangeText={setPassword} 
+      <TextInput
+        style={styles.input}
+        placeholder="Password"
+        placeholderTextColor="#999"
+        secureTextEntry
+        value={password}
+        onChangeText={setPassword}
       />
 
       <TouchableOpacity>
         <Text style={styles.forgotPassword}>Forgot Password?</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+      <TouchableOpacity style={styles.loginButton} onPress={handleAuthLogin}>
         <Text style={styles.loginButtonText}>Sign in</Text>
       </TouchableOpacity>
 
       <Text style={styles.signUpText}>
-        Don't have an account?  
+        Don't have an account?
         <Text style={{ color: "green" }} onPress={() => router.push("/signup")}>
           Sign up
         </Text>
