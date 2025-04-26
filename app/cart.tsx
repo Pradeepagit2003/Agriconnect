@@ -6,16 +6,14 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
+  Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { baseUrl } from "@/constants/api";
 import { useRouter } from "expo-router";
 
-// Define TypeScript type for cart items
 type CartItem = {
   id: number;
   product: {
@@ -33,121 +31,218 @@ type CartItem = {
     description: string;
     category: string;
     categoryId: number;
+    userName: string;
   };
+  productId: number;
   quantity: number;
   totalPrice: number;
-};
-
-// Define navigation type
-type RootStackParamList = {
-  proceed: undefined; // Add ProceedPage as a route
+  cartId: number;
+  farmerId: number;
 };
 
 const Cart = () => {
   const router = useRouter();
-  const [userId, setUserId] = useState<null | string>(null);
-  const [quantityChange, setQuantityChange] = useState(0);
-  const [cartData, setCartData] = useState({
-    id: 0,
-    userId: 0,
-    totalPrice: 0,
-    cartItems: [
-      {
-        id: 1,
-        product: {
-          id: 1,
-          userId: 2,
-          userName: "farmer",
-          name: "apple",
-          price: 20,
-          discount: 0,
-          offerPrice: 20,
-          priceType: "fixed",
-          noOfReviews: 2,
-          rating: 4.3,
-          availableQuantity: 300,
-          img: "https://i.ibb.co/dJ5wH33C/vegetable.jpg",
-          description: "Apple",
-          category: "vegetable",
-          categoryId: 1,
-        },
-        quantity: 0,
-        totalPrice: 0,
-      },
-    ],
+  const [loading, setLoading] = useState(true);
+  const [cartData, setCartData] = useState<{
+    id: number;
+    originalPrice: number;
+    discountedPrice: number;
+    finalTotalPrice: number;
+    items: CartItem[];
+  }>({
+    id: 2,
+    originalPrice: 0,
+    discountedPrice: 0,
+    finalTotalPrice: 0,
+    items: [],
   });
-  const getCartData = async () => {
+
+  const getProduct = async (id: number) => {
     try {
-      const tempuserId = await AsyncStorage.getItem("user");
-      setUserId(tempuserId);
-      const response = await axios.get(baseUrl + "cart/" + tempuserId);
-      setCartData(response.data);
+      const product = await axios.get(baseUrl + "product/" + id);
+      return product.data;
     } catch (err) {
-      console.log(err);
+      console.log("Failed to fetch product", id);
+      return {
+        id,
+        name: "Unknown Product",
+        price: 0,
+        discount: 0,
+        offerPrice: 0,
+        priceType: "N/A",
+        noOfReviews: 0,
+        rating: 0,
+        availableQuantity: 0,
+        img: "",
+        description: "N/A",
+        category: "N/A",
+        categoryId: 0,
+        userId: 0,
+        userName: "Unknown",
+      };
     }
   };
-  useEffect(() => {
-    getCartData();
-  }, [quantityChange]);
 
-  const updateItem = async (id: number, quantity: number) => {
+  const getCartData = async () => {
     try {
-      const response = await axios.put(
-        baseUrl +
-          "cart/" +
-          cartData.id +
-          "/update-item/" +
-          id +
-          "?quantity=" +
-          quantity
+      setLoading(true);
+      const tempuserId = await AsyncStorage.getItem("user");
+      const response = await axios.get(baseUrl + "cart?cartId=" + tempuserId);
+      const rawData = response.data;
+
+      // Fetch all product data
+      const itemsWithProducts = await Promise.all(
+        rawData.items.map(async (item: any) => {
+          const product = await getProduct(item.productId);
+          return { ...item, product };
+        })
       );
-      setQuantityChange((prev) => prev + 1);
+
+      // Set state with correct data
+      setCartData({
+        id: rawData.id,
+        originalPrice: rawData.originalPrice,
+        discountedPrice: rawData.discountedPrice,
+        finalTotalPrice: rawData.finalTotalPrice,
+        items: itemsWithProducts,
+      });
     } catch (err) {
       console.log(err);
+      Alert.alert("Error", "Failed to load cart. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getCartData();
+  }, []);
+
+  const updateItem = async (itemId: number, quantity: number) => {
+    try {
+      await axios.put(
+        `${baseUrl}cart/item?itemId=${itemId}&cartId=${cartData.id}&quantity=${quantity}`
+      );
+    } catch (err) {
+      console.log("Update item error:", err);
+      Alert.alert("Error", "Failed to update quantity. Please try again.");
     }
   };
 
   const deleteCartItem = async (itemId: number) => {
     try {
-      const response = await axios.delete(
-        baseUrl + "cart/" + cartData.id + "?itemId=" + itemId
+      await axios.delete(
+        `${baseUrl}cart/item?cartId=${cartData.id}&itemId=${itemId}`
       );
-      setCartData(response.data);
+      updateLocalCartAfterDeletion(itemId);
     } catch (err) {
-      console.log(err);
+      console.log("Delete item error:", err);
+      alert("");
+      Alert.alert("Error", "Failed to remove item. Please try again.");
     }
   };
 
-  // Function to increase quantity
+  const updateLocalCartAfterDeletion = (itemId: number) => {
+    const updatedItems = cartData.items.filter((item) => item.id !== itemId);
+
+    const updatedOriginal = updatedItems.reduce(
+      (sum, item) => sum + item.product.price * item.quantity,
+      0
+    );
+    const updatedDiscounted = updatedItems.reduce(
+      (sum, item) =>
+        sum + (item.product.price - item.product.offerPrice) * item.quantity,
+      0
+    );
+    const updatedFinal = updatedItems.reduce(
+      (sum, item) => sum + item.totalPrice,
+      0
+    );
+
+    setCartData((prev) => ({
+      ...prev,
+      items: updatedItems,
+      originalPrice: updatedOriginal,
+      discountedPrice: updatedDiscounted,
+      finalTotalPrice: updatedFinal,
+    }));
+  };
+
+  const updateLocalQuantity = (itemId: number, newQuantity: number) => {
+    const updatedItems = cartData.items.map((item: CartItem) => {
+      if (item.id === itemId) {
+        const updatedTotalPrice = item.product.offerPrice * newQuantity;
+        return {
+          ...item,
+          quantity: newQuantity,
+          totalPrice: updatedTotalPrice,
+        };
+      }
+      return item;
+    });
+
+    const updatedOriginal = updatedItems.reduce(
+      (sum, i) => sum + i.product.price * i.quantity,
+      0
+    );
+    const updatedDiscounted = updatedItems.reduce(
+      (sum, i) => sum + (i.product.price - i.product.offerPrice) * i.quantity,
+      0
+    );
+    const updatedFinal = updatedItems.reduce((sum, i) => sum + i.totalPrice, 0);
+
+    setCartData({
+      ...cartData,
+      items: updatedItems,
+      originalPrice: updatedOriginal,
+      discountedPrice: updatedDiscounted,
+      finalTotalPrice: updatedFinal,
+    });
+  };
+
   const increaseQuantity = (item: CartItem) => {
-    updateItem(item.id, item.quantity + 1);
+    const newQuantity = item.quantity + 1;
+    updateLocalQuantity(item.id, newQuantity);
+    updateItem(item.id, newQuantity);
   };
 
-  // Function to decrease quantity
   const decreaseQuantity = (item: CartItem) => {
-    if (item.quantity === 1) {
-      return;
-    }
-    updateItem(item.id, item.quantity - 1);
+    if (item.quantity <= 1) return;
+    const newQuantity = item.quantity - 1;
+    updateLocalQuantity(item.id, newQuantity);
+    updateItem(item.id, newQuantity);
   };
 
-  // Function to remove item
   const removeItem = (id: number) => {
-    // setCartItems((prevCart) => prevCart.filter((item) => item.id !== id));
-    console.log("remove");
-    deleteCartItem(id);
+    console.log(id);
+    // deleteCartItem(id);
+    Alert.alert(
+      "Remove Item",
+      "Are you sure you want to remove this item from the cart?",
+      [
+        { text: "Cancel", style: "cancel" },
+        { text: "Yes", onPress: () => deleteCartItem(id) },
+      ]
+    );
   };
+
+  if (loading) {
+    return (
+      <View style={styles.emptyCart}>
+        <Text style={styles.emptyText}>Loading your cart...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
-      {/* Cart Items */}
       <ScrollView contentContainerStyle={styles.cartContainer}>
-        {cartData.cartItems.length === 0 ? (
+        {cartData.items.length === 0 ? (
           <View style={styles.emptyCart}>
             <Text style={styles.emptyText}>🛒 Your cart is empty</Text>
           </View>
         ) : (
-          cartData.cartItems.map((item) => (
+          cartData.items.map((item: CartItem) => (
             <View key={item.id} style={styles.cartItem}>
               <Image
                 source={{ uri: item.product.img }}
@@ -157,7 +252,9 @@ const Cart = () => {
                 <Text style={styles.itemName}>{item.product.name}</Text>
                 <Text style={styles.farmerName}>{item.product.userName}</Text>
                 <Text style={styles.itemPrice}>
-                  Price: ₹{item.product.price}/kg
+                  Price: ₹
+                  {(item.product.price * (100 - item.product.discount)) / 100}
+                  /kg
                 </Text>
                 <Text style={styles.deliveryDate}>
                   🚚 Delivery by Wed, 19 Mar
@@ -179,7 +276,13 @@ const Cart = () => {
                     <Text style={styles.quantityText}>+</Text>
                   </TouchableOpacity>
                 </View>
-                <Text style={styles.itemTotal}>You Pay ₹{item.totalPrice}</Text>
+                <Text style={styles.itemTotal}>
+                  You Pay ₹
+                  {(item.quantity *
+                    item.product.price *
+                    (100 - item.product.discount)) /
+                    100}
+                </Text>
               </View>
               <TouchableOpacity onPress={() => removeItem(item.id)}>
                 <Ionicons name="trash-outline" size={22} color="black" />
@@ -189,51 +292,28 @@ const Cart = () => {
         )}
       </ScrollView>
 
-      {/* Total & Checkout */}
       <View style={styles.footer}>
-        <Text style={styles.totalPrice}>₹{cartData.totalPrice}</Text>
+        <Text style={styles.totalPrice}>
+          ₹{cartData.finalTotalPrice.toFixed(1)}
+        </Text>
         <Text style={styles.totalText}>Total Price + Delivery Charge</Text>
         <TouchableOpacity
-          style={styles.checkoutButton}
+          style={[
+            styles.checkoutButton,
+            cartData.items.length === 0 && { backgroundColor: "#ccc" },
+          ]}
+          disabled={cartData.items.length === 0}
           onPress={() => router.push("/payment")}
         >
-          <Text style={styles.checkoutButtonText}>Proceed to Pay →</Text>
+          <Text style={styles.checkoutButtonText}>Place Order</Text>
         </TouchableOpacity>
       </View>
     </View>
   );
 };
 
-// Styles
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#fff" },
-
-  // Header
-  header: { flexDirection: "row", alignItems: "center", padding: 15 },
-  headerTitle: { fontSize: 20, fontWeight: "bold", marginLeft: 10 },
-
-  // Delivery Section
-  deliverySection: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    backgroundColor: "#f9f1e5",
-    padding: 15,
-    margin: 10,
-    borderRadius: 10,
-  },
-  deliveryText: { fontSize: 14, fontWeight: "bold" },
-  locationText: { fontSize: 12, color: "gray" },
-  changeButton: {
-    backgroundColor: "#fff",
-    paddingHorizontal: 15,
-    paddingVertical: 5,
-    borderRadius: 5,
-    borderWidth: 1,
-    borderColor: "#ccc",
-  },
-  changeButtonText: { fontSize: 14, color: "black" },
-
-  // Cart Items
   cartContainer: { paddingHorizontal: 10, paddingBottom: 100 },
   cartItem: {
     flexDirection: "row",
@@ -282,7 +362,6 @@ const styles = StyleSheet.create({
     color: "#888",
     textAlign: "center",
   },
-  // Footer
   footer: {
     position: "absolute",
     bottom: 0,

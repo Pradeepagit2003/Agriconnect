@@ -25,10 +25,13 @@ const LoginScreen = () => {
     }
 
     try {
-      const response = await axios.post(baseUrl + "user/login", {
-        email,
-        password,
-      });
+      const response = await axios.post(
+        baseUrl + "user/login?userType=RETAILER",
+        {
+          email,
+          password,
+        }
+      );
       if (response.status === 200) {
         await AsyncStorage.setItem("user", JSON.stringify(response.data.id));
         Alert.alert("Success", "Login successful!");

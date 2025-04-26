@@ -97,8 +97,8 @@ const HomeScreen = () => {
       <View style={styles.topNav}>
         <Text style={styles.logo}>AgriConnect</Text>
         <View style={styles.navIcons}>
-          <Image source={icons.bell} style={styles.navIcon} />
-          <Image source={icons.heart} style={styles.navIcon} />
+          {/* <Image source={icons.bell} style={styles.navIcon} />
+          <Image source={icons.heart} style={styles.navIcon} /> */}
           <TouchableOpacity onPress={() => router.push("/account")}>
             <Image source={icons.profile} style={styles.profileIcon} />
           </TouchableOpacity>
@@ -200,13 +200,13 @@ const HomeScreen = () => {
           <Image source={icons.offer} style={styles.navIcon} />
           <Text style={styles.navText}>Offer</Text>
         </TouchableOpacity>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={styles.navItem}
           onPress={() => router.push("/message")}
         >
           <Image source={icons.message} style={styles.navIcon} />
           <Text style={styles.navText}>Message</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <TouchableOpacity
           style={styles.navItem}
           onPress={() => router.push("/cart")}

@@ -9,7 +9,6 @@ import {
   TextInput,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { productData } from "./data"; // Ensure this file exists and has product data
 import { useLocalSearchParams, useRouter } from "expo-router/build/hooks";
 import axios from "axios";
 import { baseUrl } from "@/constants/api";
@@ -82,28 +81,19 @@ const ProductView = () => {
   }, []);
 
   const addToCart = async () => {
-    const CartItem = {
-      id: 0,
-      cart: null,
-      product: productDetail,
-      quantity: quantity,
-      totalPrice:
-        quantity *
-        (productDetail.price -
-          (productDetail.price * productDetail.discount) / 100),
-    };
     try {
       const response = await axios.post(
-        baseUrl + "cart/" + userId + "/add-item",
-        CartItem
+        baseUrl + "cart/item?cartId=" + userId,
+        {
+          productId: productDetail.id,
+          quantity: quantity,
+        }
       );
       console.log(response.data);
       router.push("../cart");
     } catch (err) {
       console.log(err);
     }
-
-    console.log(CartItem);
     // router.push("../cart");
   };
 

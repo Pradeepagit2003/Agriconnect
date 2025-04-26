@@ -36,7 +36,7 @@ const SignUpScreen = () => {
         email: email,
         number: mobile,
         password: password,
-        userType: "farmer",
+        userType: "retailer",
       };
       try {
         const response = await axios.post(baseUrl + "user", user);

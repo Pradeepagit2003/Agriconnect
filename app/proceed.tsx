@@ -94,10 +94,11 @@ const CartScreen = () => {
             </View>
 
             {/* Final Payment Button */}
-            <TouchableOpacity style={styles.paymentButton}>
-              <Text style={styles.paymentText}>
-                Proceed to Pay ₹{totalAmount}
-              </Text>
+            <TouchableOpacity
+              style={styles.paymentButton}
+              onPress={() => handleNavigate("../home")}
+            >
+              <Text style={styles.paymentText}>Place Order</Text>
             </TouchableOpacity>
           </View>
         </View>

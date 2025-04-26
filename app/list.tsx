@@ -12,7 +12,6 @@ import { router, useLocalSearchParams } from "expo-router";
 import axios from "axios";
 import { baseUrl } from "@/constants/api";
 import { productData } from "./data.js";
-import { red } from "react-native-reanimated/lib/typescript/Colors.js";
 
 // Define product type
 type Product = {

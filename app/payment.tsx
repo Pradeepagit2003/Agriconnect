@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import RazorpayCheckout from "react-native-razorpay";
 import {
   View,
   Text,
@@ -6,20 +7,59 @@ import {
   StyleSheet,
   ScrollView,
   Modal,
+  ActivityIndicator,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 import { useRouter } from "expo-router";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { MaterialIcons } from "@expo/vector-icons";
+import { baseUrl } from "@/constants/api";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+const PaymentMethods = {
+  // UPI: "UPI",
+  COD: "COD",
+} as const;
+
+type PaymentType = keyof typeof PaymentMethods;
 
 const CartPaymentScreen = () => {
   const router = useRouter();
   const [isModalVisible, setModalVisible] = useState(false);
-  const [selectedPayment, setSelectedPayment] = useState<string | null>(null);
-
-  const totalMRP = 7360;
-  const discount = 1490;
-  const deliveryCharge = 200;
+  const [selectedPayment, setSelectedPayment] = useState<PaymentType | null>(
+    null
+  );
+  const [loading, setLoading] = useState(false);
+  const [userId, setUserId] = useState("");
+  const totalMRP = 100;
+  const discount = 10;
+  const deliveryCharge = 40;
   const totalAmount = totalMRP - discount + deliveryCharge;
+
+  const handleProceedToPayment = async () => {
+    if (!selectedPayment) return;
+  };
+
+  const placeOrder = async () => {
+    try {
+      const tempuserId = await AsyncStorage.getItem("user");
+      if (tempuserId) {
+        console.log(tempuserId);
+        const response = await axios.post(
+          baseUrl + "order/place?cartId=" + tempuserId
+        );
+        console.log(response);
+        if (response.status === 200) {
+          setModalVisible(false);
+          router.push("../home");
+        }
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -39,9 +79,9 @@ const CartPaymentScreen = () => {
             <Text style={styles.deliveryText}>Delivery to 639110</Text>
             <Text style={styles.locationText}>Kulithalai</Text>
           </View>
-          <TouchableOpacity onPress={() => router.push("../address")}>
+          {/* <TouchableOpacity onPress={() => router.push("../address")}>
             <Text style={styles.changeText}>Change</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
 
         {/* Price Details */}
@@ -77,7 +117,7 @@ const CartPaymentScreen = () => {
           style={styles.payButton}
           onPress={() => setModalVisible(true)}
         >
-          <Text style={styles.payText}>Pay ₹{totalAmount}</Text>
+          <Text style={styles.payText}>Place Order</Text>
         </TouchableOpacity>
       </View>
 
@@ -88,59 +128,70 @@ const CartPaymentScreen = () => {
         visible={isModalVisible}
         onRequestClose={() => setModalVisible(false)}
       >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <TouchableOpacity onPress={() => setModalVisible(false)}>
-              <Icon name="close" size={24} />
-            </TouchableOpacity>
+        <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+          <View style={styles.modalContainer}>
+            <TouchableWithoutFeedback onPress={() => {}}>
+              <View style={styles.modalContent}>
+                <TouchableOpacity onPress={() => setModalVisible(false)}>
+                  <Icon name="close" size={24} />
+                </TouchableOpacity>
 
-            <Text style={styles.modalTitle}>Select Payment Method</Text>
-            <Text style={styles.modalAmount}>₹{totalAmount}</Text>
+                <Text style={styles.modalTitle}>Select Payment Method</Text>
+                <Text style={styles.modalAmount}>₹{totalAmount}</Text>
 
-            {/* Address Row */}
-            <View style={styles.modalRow}>
-              <Icon name="map-marker" size={24} />
-              <Text style={styles.modalText}>
-                Delivery to Kulithalai, 639110
-              </Text>
-            </View>
-
-            {/* Payment Options */}
-            {["UPI", "COD"].map((method) => (
-              <TouchableOpacity
-                key={method}
-                style={styles.paymentOption}
-                onPress={() => setSelectedPayment(method)}
-              >
-                <View style={styles.radioButton}>
-                  {selectedPayment === method && (
-                    <View style={styles.radioSelected} />
-                  )}
-                </View>
-                <View>
-                  <Text style={styles.paymentMethod}>
-                    {method === "UPI" ? "UPI" : "Cash on Delivery"}
-                  </Text>
-                  <Text style={styles.paymentDetail}>
-                    {method === "UPI" ? "Google Pay" : "Pay at doorstep"}
+                {/* Address Row */}
+                <View style={styles.modalRow}>
+                  <Icon name="map-marker" size={24} />
+                  <Text style={styles.modalText}>
+                    Delivery to Kulithalai, 639110
                   </Text>
                 </View>
-              </TouchableOpacity>
-            ))}
 
-            <TouchableOpacity
-              style={[
-                styles.paymentButton,
-                { backgroundColor: selectedPayment ? "#28a745" : "#ccc" },
-              ]}
-              disabled={!selectedPayment}
-            >
-              <Text style={styles.paymentText}>
-                Proceed to Pay ₹{totalAmount}
-              </Text>
-            </TouchableOpacity>
+                {/* Payment Options */}
+                {Object.values(PaymentMethods).map((method) => (
+                  <TouchableOpacity
+                    key={method}
+                    style={styles.paymentOption}
+                    onPress={() => setSelectedPayment(method as PaymentType)}
+                  >
+                    <View style={styles.radioButton}>
+                      {selectedPayment === method && (
+                        <View style={styles.radioSelected} />
+                      )}
+                    </View>
+                    <View>
+                      <Text style={styles.paymentMethod}>
+                        {/* {method === "UPI" ? "UPI" : "Cash on Delivery"} */}
+                        Cash on Delivery
+                      </Text>
+                      <Text style={styles.paymentDetail}>
+                        {/* {method === "UPI"
+                          ? "Google Pay / PhonePe / UPI Apps"
+                          : "Pay at doorstep"} */}
+                        Pay at doorstep
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                ))}
+
+                {loading ? (
+                  <ActivityIndicator size="large" color="#28a745" />
+                ) : (
+                  <TouchableOpacity
+                    style={[
+                      styles.paymentButton,
+                      { backgroundColor: selectedPayment ? "#28a745" : "#ccc" },
+                    ]}
+                    disabled={!selectedPayment}
+                    onPress={placeOrder}
+                  >
+                    <Text style={styles.paymentText}>Place order</Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+            </TouchableWithoutFeedback>
           </View>
-        </View>
+        </TouchableWithoutFeedback>
       </Modal>
     </View>
   );
@@ -226,10 +277,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
-  disabledText: {
-    fontSize: 14,
-    color: "gray",
-  },
   payButton: {
     backgroundColor: "#FFD700",
     padding: 12,
@@ -241,16 +288,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     color: "#000",
-  },
-  otherPayment: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginVertical: 15,
-  },
-  otherPaymentText: {
-    fontSize: 16,
-    fontWeight: "bold",
   },
   priceDetails: {
     backgroundColor: "#F9F9F9",
@@ -334,7 +371,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
   paymentButton: {
-    backgroundColor: "#28a745",
     padding: 12,
     borderRadius: 8,
     alignItems: "center",
