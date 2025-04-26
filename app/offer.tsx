@@ -1,56 +1,56 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
-  TextInput,
   Image,
+  FlatList,
   TouchableOpacity,
-  ScrollView,
   StyleSheet,
+  ScrollView,
 } from "react-native";
-import { Ionicons, AntDesign, Feather } from "@expo/vector-icons";
+import { Ionicons, Feather } from "@expo/vector-icons";
+import { router } from "expo-router";
+import axios from "axios";
+import { baseUrl } from "@/constants/api";
+
+// Define product type
+type Product = {
+  id: number | string;
+  name: string;
+  price: number;
+  availableQuantity: number;
+  img: string;
+  userName: string;
+  empty?: boolean;
+};
 
 const OfferScreen = () => {
-  const products = [
-    {
-      id: 1,
-      name: "Barnyard",
-      subName: "Kuthiraivali",
-      rating: 4.3,
-      weight: "215kg",
-      originalPrice: "₹110",
-      discountedPrice: "₹55",
-      discountText: "50% Off",
-      image: require("../assets/images/barnyard.png"),
-    },
-    {
-      id: 2,
-      name: "Foxtail",
-      subName: "Thinai",
-      rating: 4.5,
-      weight: "200kg",
-      originalPrice: "₹150",
-      discountedPrice: "₹75",
-      discountText: "50% Off",
-      image: require("../assets/images/foxtail.png"),
-    },
-  ];
+  const [products, setProducts] = useState<Product[]>([]);
+
+  const getProducts = async () => {
+    try {
+      const response = await axios.get(`${baseUrl}product/offers`);
+      if (response.status === 200) {
+        setProducts(response.data);
+      } else {
+        setProducts([]);
+      }
+    } catch (err) {
+      setProducts([]);
+    }
+  };
+
+  useEffect(() => {
+    getProducts();
+  }, []);
+
+  const formattedProducts =
+    products.length % 2 !== 0
+      ? [...products, { id: "dummy", empty: true } as Product]
+      : products;
 
   return (
     <View style={styles.container}>
-      {/* Search Bar */}
-      <View style={styles.searchContainer}>
-        <Ionicons
-          name="search-outline"
-          size={20}
-          color="#888"
-          style={styles.searchIcon}
-        />
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search for all Product"
-        />
-      </View>
       <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom: 80 }}>
         {/* Best Offer Banner */}
         <View style={styles.bannerContainer}>
@@ -63,41 +63,52 @@ const OfferScreen = () => {
           </View>
         </View>
 
-        {/* Category Filters */}
-        {/* <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoryContainer}>
-         {["Vegetables", "Fruits", "Flowers", "Millets"].map((item, index) => (
-           <TouchableOpacity key={index} style={styles.categoryButton}>
-             <Text style={styles.categoryText}>{item}</Text>
-           </TouchableOpacity>
-         ))}
-       </ScrollView> */}
-
         {/* Product List */}
-        {products.map((item) => (
-          <View style={styles.productCard} key={item.id}>
-            <Image source={item.image} style={styles.productImage} />
-            <View style={styles.productDetails}>
-              <Text style={styles.productName}>
-                {item.name}-<Text style={styles.subName}>{item.subName}</Text>
-              </Text>
-              <View style={styles.ratingContainer}>
-                <AntDesign name="star" size={16} color="#f4b400" />
-                <Text style={styles.ratingText}>{item.rating}</Text>
-              </View>
-              <Text style={styles.productWeight}>{item.weight}</Text>
-              <View style={styles.priceContainer}>
-                <Text style={styles.originalPrice}>{item.originalPrice}</Text>
-                <Text style={styles.discountedPrice}>
-                  {item.discountedPrice}
-                </Text>
-                <Text style={styles.discountText}>{item.discountText}</Text>
-              </View>
-              <TouchableOpacity style={styles.addToBagButton}>
-                <Text style={styles.addToBagText}>Add to Bag</Text>
+        <FlatList
+          data={formattedProducts}
+          keyExtractor={(item) => item.id.toString()}
+          numColumns={2}
+          renderItem={({ item }) => {
+            if (item.empty) {
+              return (
+                <View
+                  style={[
+                    styles.card,
+                    { backgroundColor: "transparent", elevation: 0 },
+                  ]}
+                />
+              );
+            }
+
+            return (
+              <TouchableOpacity
+                style={styles.card}
+                onPress={() => {
+                  router.push({
+                    pathname: "/product",
+                    params: { data: JSON.stringify(item.id) },
+                  });
+                }}
+              >
+                <View style={styles.topRow}>
+                  <Text style={styles.productName}>{item.name}</Text>
+                  <Image
+                    source={{ uri: item.img }}
+                    style={styles.productImage}
+                  />
+                </View>
+                <View style={styles.bottomRow}>
+                  <Text style={styles.farmerName}>{item.userName}</Text>
+                  <Text style={styles.productInfo}>
+                    Available: {item.availableQuantity} kg
+                  </Text>
+                  <Text style={styles.productPrice}>Price: ₹{item.price}</Text>
+                </View>
               </TouchableOpacity>
-            </View>
-          </View>
-        ))}
+            );
+          }}
+          contentContainerStyle={styles.listContainer}
+        />
       </ScrollView>
 
       {/* Bottom Navigation Bar */}
@@ -125,24 +136,56 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     padding: 15,
   },
-  searchContainer: {
+  listContainer: {
+    paddingHorizontal: 10,
+    paddingBottom: 80,
+  },
+  card: {
+    flex: 1,
+    backgroundColor: "white",
+    margin: 10,
+    borderRadius: 10,
+    padding: 10,
+    elevation: 5,
+    height: 150,
+  },
+  productImage: {
+    width: 50,
+    height: 50,
+    resizeMode: "contain",
+  },
+  topRow: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#f1f1f1",
-    borderRadius: 5,
-    padding: 5,
+    justifyContent: "space-between",
+    width: "100%",
   },
-  searchIcon: {
-    marginRight: 10,
+  bottomRow: {
+    flexDirection: "column",
+    marginTop: 5,
   },
-  searchInput: {
-    flex: 1,
+  productName: {
     fontSize: 16,
+    fontWeight: "bold",
+    flex: 1,
+    textTransform: "capitalize",
+  },
+  farmerName: {
+    fontSize: 14,
+    color: "#a9a9a9",
+    marginVertical: 2,
+  },
+  productInfo: {
+    fontSize: 14,
+  },
+  productPrice: {
+    fontSize: 16,
+    fontWeight: "bold",
   },
   bannerContainer: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "flex-end", // Pushes image to the right
+    justifyContent: "flex-end",
     marginVertical: 15,
     borderRadius: 10,
     backgroundColor: "#DBFFD4",
@@ -152,7 +195,7 @@ const styles = StyleSheet.create({
     width: "70%",
     height: 200,
     resizeMode: "cover",
-    alignSelf: "flex-end", // Ensures it aligns to the right within the container
+    alignSelf: "flex-end",
   },
   bannerTextContainer: {
     position: "absolute",
@@ -168,102 +211,10 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#fff",
   },
-  categoryContainer: {
-    flexDirection: "row",
-    marginVertical: 10,
-  },
-  categoryButton: {
-    paddingVertical: 2,
-    paddingHorizontal: 12,
-    backgroundColor: "#fff",
-    borderRadius: 15,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    marginRight: 10,
-    height: 35, // Reduced height
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  categoryText: {
-    fontSize: 14,
-    color: "#666",
-  },
-  productCard: {
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    padding: 15,
-    flexDirection: "row",
-    alignItems: "center",
-    elevation: 2,
-    marginTop: 10,
-  },
-  productImage: {
-    width: 80,
-    height: 80,
-    borderRadius: 10,
-    marginRight: 10,
-  },
-  productDetails: {
-    flex: 1,
-    flexShrink: 1,
-  },
-  productName: {
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  subName: {
-    fontSize: 14,
-    color: "#888",
-  },
-  ratingContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginVertical: 3,
-  },
-  ratingText: {
-    marginLeft: 5,
-    fontSize: 14,
-  },
-  productWeight: {
-    fontSize: 14,
-    color: "#666",
-  },
-  priceContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  originalPrice: {
-    fontSize: 14,
-    textDecorationLine: "line-through",
-    color: "#888",
-    marginRight: 5,
-  },
-  discountedPrice: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#27ae60",
-  },
-  discountText: {
-    fontSize: 14,
-    color: "#d32f2f",
-    marginLeft: 5,
-  },
-  addToBagButton: {
-    marginTop: 10,
-    backgroundColor: "green",
-    paddingVertical: 5,
-    borderRadius: 5,
-    alignItems: "center",
-  },
-  addToBagText: {
-    color: "#fff",
-    fontSize: 14,
-    fontWeight: "bold",
-  },
   bottomNav: {
     flexDirection: "row",
     justifyContent: "space-around",
-    paddingVertical: 10,
+    paddingVertical: 5, // Reduced height
     borderTopWidth: 1,
     borderColor: "#eee",
     backgroundColor: "#fff",

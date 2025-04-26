@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
-import { useNavigation, NavigationProp } from "@react-navigation/native";
 import { router, useLocalSearchParams } from "expo-router";
 import axios from "axios";
 import { baseUrl } from "@/constants/api";
@@ -24,13 +23,7 @@ type Product = {
   empty?: boolean;
 };
 
-// Define navigation type
-type RootStackParamList = {
-  tomatoview: { product: any };
-};
-
 export default function List() {
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const { data } = useLocalSearchParams();
 
   const selected = Array.isArray(data) ? JSON.parse(data[0]) : JSON.parse(data);
@@ -63,10 +56,6 @@ export default function List() {
       </View>
     );
   }
-
-  const getSearchResult = (query: any) => {
-    return productData.find((product) => product.name === query);
-  };
 
   // Add dummy product if product count is odd
   const formattedProducts =
