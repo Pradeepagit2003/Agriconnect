@@ -1,7 +1,13 @@
 {
   "expo": {
+
+
     "name": "myapp",
     "slug": "myapp",
+
+    
+
+
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -33,6 +39,7 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
+
       ],
       [
         "expo-font",
@@ -42,15 +49,18 @@
             "MaterialIcons": "./node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"
           }
         }
+
       ]
     ],
     "experiments": {
       "typedRoutes": true
+
     },
     "extra": {
       "eas": {
         "projectId": "your-project-id"
       }
+
     }
   }
 }
